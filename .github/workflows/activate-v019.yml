@@ -1,0 +1,34 @@
+name: Activate approved Master v0.1.19 Release
+on:
+  push:
+    branches: [main]
+    paths: [updates/stable.signed.json]
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Require exact Windows-verified Master envelope
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,base64
+          raw=pathlib.Path('updates/stable.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='bc1f1111b0142ed7e2f14307b1b6ea8365da71a15a0f15afbdaa187827a5dbf3'
+          payload=base64.b64decode(json.loads(raw)['payload'])
+          assert hashlib.sha256(payload).hexdigest()=='6f1effa4a95301500ede093cabce55531170c7113b233f8089e6067cdd66c5e5'
+          data=json.loads(payload);assert data['sequence']==2 and data['catalog']['appVersion']=='0.1.19' and data['catalog']['profiles']==['master']
+          print('Exact production-verified signed envelope confirmed.')
+          PY
+      - name: Promote existing immutable asset without replacement
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v0.1.19 --json assets > /tmp/assets.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/assets.json'))['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.19.ecuss-update.zip' and a[0]['size']==12416978
+          PY
+          gh release edit v0.1.19 --prerelease=false --latest=true --title 'Master v0.1.19' --notes-file releases/v0.1.19/NOTES.md
