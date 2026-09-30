@@ -1,8 +1,6 @@
 name: Activate approved Master v0.1.19 Release
 on:
-  push:
-    branches: [main]
-    paths: [updates/stable.signed.json]
+  workflow_dispatch:
 permissions:
   contents: write
 jobs:
