@@ -1,0 +1,15 @@
+# Defense in depth only; this does not replace final payload/content review.
+*.pfx
+*.p12
+*.key
+*.pem
+*.msg
+*.xlsx
+*.xls
+*.log
+publisher-local.json
+github-token.dat
+.env
+.env.*
+**/mail-assets/
+**/TranslationJobs/
