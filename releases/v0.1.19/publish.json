@@ -1,0 +1,15 @@
+{
+  "schema": 1,
+  "version": "0.1.19",
+  "status": "candidate-not-active",
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.19/TRADE_OPERATIONS_SUITE_Master_v0.1.19.ecuss-update.zip",
+      "releaseId": "desktop-0.1.19-master-r20261001.1",
+      "bytes": 12416978,
+      "sha256": "4df6e85338888621936b5d693c49bfddc85e185d3feccd995cab936d83641eb4",
+      "payloadFiles": 72
+    }
+  ]
+}
