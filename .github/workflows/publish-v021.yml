@@ -20,7 +20,7 @@ jobs:
           python3 - <<'PY'
           import hashlib,json,pathlib,zipfile
           m=json.loads(pathlib.Path('releases/v0.1.21/publish.json').read_text())
-          assert m['schema']==1 and m['version']=='0.1.20' and len(m['assets'])==1
+          assert m['schema']==1 and m['version']=='0.1.21' and len(m['assets'])==1
           for a in m['assets']:
               assert a['path']=='packages/v0.1.21/TRADE_OPERATIONS_SUITE_Master_v0.1.21.ecuss-update.zip'
               p=pathlib.Path(a['path']); b=p.read_bytes()
@@ -28,7 +28,7 @@ jobs:
               with zipfile.ZipFile(p) as z:
                   assert z.testzip() is None
                   d=json.loads(z.read('manifest.json'))
-                  assert d['appVersion']=='0.1.20' and d['profile']=='master'
+                  assert d['appVersion']=='0.1.21' and d['profile']=='master'
                   assert set(z.namelist())=={f['path'] for f in d['files']}|{'manifest.json'}
                   assert not any(n.startswith('modules/balance-ecuss/') or n.endswith(('.pfx','.msg','.xlsx')) for n in z.namelist())
                   for f in d['files']:
