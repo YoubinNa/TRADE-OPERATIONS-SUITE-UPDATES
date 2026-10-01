@@ -1,0 +1,42 @@
+name: Activate approved Master v0.1.21 Release
+on:
+  push:
+    branches: [main]
+    paths: ['updates/stable.signed.json', 'updates/stable-longterm.signed.json', '.github/workflows/activate-v021.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Require exact Windows-verified Master envelope
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,base64
+          raw=pathlib.Path('updates/stable.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='22f30a67195d6a9cbc52bc7c236632d13182c6b54f014074ecbd7509958b337b'
+          payload=base64.b64decode(json.loads(raw)['payload'])
+          assert hashlib.sha256(payload).hexdigest()=='358b44e72ab2caf31e6120b930740d3df1b7844527c83b05936e2ad6f6079344'
+          data=json.loads(payload);assert data['sequence']==4 and data['catalog']['appVersion']=='0.1.21' and data['catalog']['profiles']==['master']
+          p=data['catalog']['packages'][0]
+          assert p['sha256']=='d78356269bec645efcb915439b024a6e76482d33a906e55c0bccdb9ed8f692fe'
+          longraw=pathlib.Path('updates/stable-longterm.signed.json').read_bytes()
+          assert hashlib.sha256(longraw).hexdigest()=='4ea0cbb4aab39bfcc079abd11383b2168510613d14161817656a1735bce1f418'
+          longpayload=base64.b64decode(json.loads(longraw)['payload'])
+          assert hashlib.sha256(longpayload).hexdigest()=='c279db43621f76b3a4a90ca2e0e9e50f4e77079cfa13c032f5d7fbcd648e2abf'
+          longdata=json.loads(longpayload);assert longdata['sequence']==5 and longdata['catalog']==data['catalog']
+          print('Exact production-verified bridge and longterm envelopes confirmed.')
+          PY
+      - name: Promote existing immutable asset without replacement
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v0.1.21 --json assets > /tmp/assets.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/assets.json'))['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.21.ecuss-update.zip' and a[0]['size']==12446120
+          PY
+          gh release edit v0.1.21 --prerelease=false --latest=true --title 'Master v0.1.21' --notes-file releases/v0.1.21/NOTES.md
