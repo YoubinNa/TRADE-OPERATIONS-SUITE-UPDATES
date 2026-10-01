@@ -1,0 +1,14 @@
+{
+    "assistantVersion":  "1.1.1",
+    "checks":  7,
+    "platform":  "Windows Server 2022 / PowerShell 5.1",
+    "realGitHubWriteReadback":  true,
+    "fixedPublicRepository":  true,
+    "duplicateDeliveryAvoided":  true,
+    "windowsDpapi":  true,
+    "productionPrivateKeyUsed":  false,
+    "userPcConnectionVerified":  false,
+    "activeFeedUnchanged":  true,
+    "legacyBridgeUnchanged":  true,
+    "inboxPath":  "publisher/inbox/seq-9-7eaa280a58979dc77b5963a8cf0c5b91392cddc9f7ac55ef73e76c272acc9ff7.signed.json"
+}
