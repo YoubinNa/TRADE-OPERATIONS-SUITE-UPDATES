@@ -1,9 +1,6 @@
 name: Verify Master assistant 1.1.1 real GitHub delivery
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/verify-assistant-delivery-v1-1.yml']
 permissions:
   contents: write
 jobs:
