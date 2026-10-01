@@ -1,8 +1,5 @@
 name: Activate approved Master v0.1.23 Release
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/activate-v023.yml', 'updates/stable-longterm.signed.json']
   workflow_dispatch:
 permissions:
   contents: write
