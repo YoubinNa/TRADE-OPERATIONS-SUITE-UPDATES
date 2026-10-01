@@ -1,9 +1,6 @@
 name: Publish verified Master v0.1.24 candidate
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths: ['releases/v0.1.24/publish.json', '.github/workflows/publish-v024.yml']
 permissions:
   contents: write
 concurrency:
