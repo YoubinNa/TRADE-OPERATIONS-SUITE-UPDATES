@@ -1,0 +1,39 @@
+name: Activate approved Master v0.1.20 Release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - updates/stable.signed.json
+      - .github/workflows/activate-v020.yml
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Require exact Windows-verified Master envelope
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,base64
+          raw=pathlib.Path('updates/stable.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='21cca669ac0f684846911f63086be8ba4bc299e36e27e3e9eb01d4b31523fe8a'
+          payload=base64.b64decode(json.loads(raw)['payload'])
+          assert hashlib.sha256(payload).hexdigest()=='175fa94b34aaa149e5f3c8bb7897084302373c2695d185564b113270d272b129'
+          data=json.loads(payload);assert data['sequence']==3 and data['catalog']['appVersion']=='0.1.20' and data['catalog']['profiles']==['master']
+          p=data['catalog']['packages'][0]
+          assert p['sha256']=='325ebc2d4a692c3ffe5db5ac1eb878b795757452fd377d5829fa38759792ca0d'
+          print('Exact production-verified signed envelope confirmed.')
+          PY
+      - name: Promote existing immutable asset without replacement
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v0.1.20 --json assets > /tmp/assets.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/assets.json'))['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.20.ecuss-update.zip' and a[0]['size']==12422439
+          PY
+          gh release edit v0.1.20 --prerelease=false --latest=true --title 'Master v0.1.20' --notes-file releases/v0.1.20/NOTES.md
