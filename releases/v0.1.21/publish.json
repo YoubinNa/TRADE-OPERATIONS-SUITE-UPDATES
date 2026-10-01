@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "version": "0.1.21",
+  "profile": "master",
+  "status": "verified-download-candidate-signature-pending",
+  "assets": [
+    {
+      "path": "packages/v0.1.21/TRADE_OPERATIONS_SUITE_Master_v0.1.21.ecuss-update.zip",
+      "bytes": 12446120,
+      "sha256": "d78356269bec645efcb915439b024a6e76482d33a906e55c0bccdb9ed8f692fe"
+    }
+  ]
+}
