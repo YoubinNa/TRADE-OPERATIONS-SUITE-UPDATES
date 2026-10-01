@@ -1,0 +1,41 @@
+name: Activate approved Master v0.1.23 Release
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/activate-v023.yml', 'updates/stable-longterm.signed.json']
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Require exact Windows-verified Master envelope
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,base64
+          bridge=pathlib.Path('updates/stable.signed.json').read_bytes()
+          assert hashlib.sha256(bridge).hexdigest()=='238cf475f6b03f4cd7bbaf3d6d6db06fcfaa1af862798b088e15db0486cc3b5d'
+          raw=pathlib.Path('updates/stable-longterm.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='be9667f5eaf51fe86dbc572c3f52b74d84fee5a89873931a8c28280d347d2724'
+          assert raw==pathlib.Path('releases/v0.1.23/public-update-v0.1.23-longterm-signed.json').read_bytes()
+          payload=base64.b64decode(json.loads(raw)['payload'])
+          assert hashlib.sha256(payload).hexdigest()=='ade16e07871c4fbd541a3c5ff76d4481ca9fe41cf84e89f562a9095f1481a61e'
+          data=json.loads(payload);assert data['sequence']==8 and data['catalog']['appVersion']=='0.1.23' and data['catalog']['profiles']==['master']
+          p=data['catalog']['packages'][0]
+          assert p['sha256']=='30d43a877f5a349f0b8cadd3887299b42fa677a03f7678c45bd30df5be989d0f' and p['bytes']==12449900
+          assert data['expiresAt']=='2099-12-31T23:59:59.0000000+00:00'
+          print('Exact Windows-verified longterm envelope; legacy bridge unchanged.')
+          PY
+      - name: Promote existing immutable asset without replacement
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v0.1.23 --json assets > /tmp/assets.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/assets.json'))['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.23.ecuss-update.zip' and a[0]['size']==12449900
+          PY
+          gh release edit v0.1.23 --prerelease=false --latest=true --title 'Master v0.1.23' --notes-file releases/v0.1.23/NOTES.md
