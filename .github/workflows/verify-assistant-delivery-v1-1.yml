@@ -1,4 +1,4 @@
-name: Verify Master assistant 1.1.0 real GitHub delivery
+name: Verify Master assistant 1.1.1 real GitHub delivery
 on:
   workflow_dispatch:
   push:
@@ -19,12 +19,12 @@ jobs:
         run: |
           $ErrorActionPreference='Stop'
           Add-Type -AssemblyName System.IO.Compression.FileSystem
-          $zip=Join-Path $env:GITHUB_WORKSPACE 'publisher/assistant-v1.1.0/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.0.zip'
-          if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -cne '55b99f8107699c09a0efd90e0bc86c553a65cb1a834ef6509507c2f9714e16d7'){throw 'Package mismatch'}
+          $zip=Join-Path $env:GITHUB_WORKSPACE 'publisher/assistant-v1.1.1/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1.zip'
+          if((Get-FileHash $zip -Algorithm SHA256).Hash.ToLowerInvariant() -cne 'dd146f56b1da1f1b289d8ee5a58a676054d8805c9bf5160e01090d0ec5209a4f'){throw 'Package mismatch'}
           $temp=Join-Path $env:RUNNER_TEMP ('publisher-network-'+[Guid]::NewGuid().ToString('N'))
           try {
             [IO.Compression.ZipFile]::ExtractToDirectory($zip,$temp)
-            $root=Join-Path $temp 'TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.0'
+            $root=Join-Path $temp 'TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1'
             Import-Module (Join-Path $root 'Publisher.Core.psm1') -Force -DisableNameChecking
             Import-Module (Join-Path $root 'Publisher.Delivery.psm1') -Force -DisableNameChecking
             $feed=Get-PublisherNetworkText feed
@@ -38,8 +38,8 @@ jobs:
             if(!$again.AlreadyDelivered -or $again.Path -cne $first.Path){throw 'Idempotency failed'}
             if((Get-PublisherNetworkText feed) -cne $feed){throw 'Active feed changed'}
             if((Get-FileHash 'updates/stable.signed.json' -Algorithm SHA256).Hash.ToLowerInvariant() -cne '238cf475f6b03f4cd7bbaf3d6d6db06fcfaa1af862798b088e15db0486cc3b5d'){throw 'Legacy bridge changed'}
-            $record=[ordered]@{assistantVersion='1.1.0';checks=7;platform='Windows Server 2022 / PowerShell 5.1';realGitHubWriteReadback=$true;fixedPublicRepository=$true;duplicateDeliveryAvoided=$true;windowsDpapi=$true;productionPrivateKeyUsed=$false;userPcConnectionVerified=$false;activeFeedUnchanged=$true;legacyBridgeUnchanged=$true;inboxPath=$first.Path}
-            [IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE 'publisher/assistant-v1.1.0/ONLINE_VERIFICATION.json'),($record|ConvertTo-Json)+[Environment]::NewLine,[Text.UTF8Encoding]::new($false))
+            $record=[ordered]@{assistantVersion='1.1.1';checks=7;platform='Windows Server 2022 / PowerShell 5.1';realGitHubWriteReadback=$true;fixedPublicRepository=$true;duplicateDeliveryAvoided=$true;windowsDpapi=$true;productionPrivateKeyUsed=$false;userPcConnectionVerified=$false;activeFeedUnchanged=$true;legacyBridgeUnchanged=$true;inboxPath=$first.Path}
+            [IO.File]::WriteAllText((Join-Path $env:GITHUB_WORKSPACE 'publisher/assistant-v1.1.1/ONLINE_VERIFICATION.json'),($record|ConvertTo-Json)+[Environment]::NewLine,[Text.UTF8Encoding]::new($false))
             Write-Output 'PASS: 7 real delivery checks; no Master private key used.'
           } finally {
             $env:PUBLISHER_TEST_TOKEN=$null
@@ -50,7 +50,7 @@ jobs:
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add publisher/assistant-v1.1.0/ONLINE_VERIFICATION.json
+          git add publisher/assistant-v1.1.1/ONLINE_VERIFICATION.json
           git commit -m 'test: actual Windows assistant upload readback verified'
           git pull --rebase origin main
           git push origin HEAD:main
