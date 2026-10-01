@@ -1,8 +1,5 @@
 name: Publish verified Master v0.1.23 candidate
 on:
-  push:
-    branches: [main]
-    paths: ['.github/workflows/publish-v023.yml', 'releases/v0.1.23/publish.json', 'packages/v0.1.23/**']
   workflow_dispatch:
 permissions:
   contents: write
