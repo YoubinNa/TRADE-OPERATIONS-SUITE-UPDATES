@@ -1,0 +1,18 @@
+{
+  "appVersion": "0.1.24",
+  "profile": "master",
+  "sequence": 9,
+  "expiresAt": "2099-12-31T23:59:59Z",
+  "activationCommit": "e32528338e8c585ae2030ed548896183c98bd8e4",
+  "activationRun": 36834222011,
+  "actualWindowsAssemblies": [
+    "0.1.23",
+    "0.1.24"
+  ],
+  "checksPerAssembly": 21,
+  "activeFeedRetrieved": true,
+  "anonymousPackageDownloads": 2,
+  "applyRollbackAndDataPreservation": true,
+  "userPcVerified": false,
+  "userReleasePublished": false
+}
