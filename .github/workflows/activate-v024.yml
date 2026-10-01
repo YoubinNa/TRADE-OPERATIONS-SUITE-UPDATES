@@ -1,0 +1,41 @@
+name: Activate approved Master v0.1.24 Release
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/activate-v024.yml']
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Require exact Windows-verified Master envelope
+        run: |
+          python3 - <<'PY'
+          import pathlib,hashlib,json,base64
+          bridge=pathlib.Path('updates/stable.signed.json').read_bytes()
+          assert hashlib.sha256(bridge).hexdigest()=='238cf475f6b03f4cd7bbaf3d6d6db06fcfaa1af862798b088e15db0486cc3b5d'
+          raw=pathlib.Path('updates/stable-longterm.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='4f19b5c4866d81a29b21810c55eba90ceb115e304773566513c82ab5a4d93c63'
+          assert raw==pathlib.Path('releases/v0.1.24/public-update-v0.1.24-longterm-signed.json').read_bytes()
+          payload=base64.b64decode(json.loads(raw)['payload'])
+          assert hashlib.sha256(payload).hexdigest()=='7eaa280a58979dc77b5963a8cf0c5b91392cddc9f7ac55ef73e76c272acc9ff7'
+          data=json.loads(payload);assert data['sequence']==9 and data['catalog']['appVersion']=='0.1.24' and data['catalog']['profiles']==['master']
+          p=data['catalog']['packages'][0]
+          assert p['sha256']=='0df0730cd1f61353986ca6e908fb73a761539ac0db7318b7a3d077cedcab6e7b' and p['bytes']==12449656
+          assert data['expiresAt']=='2099-12-31T23:59:59.0000000+00:00'
+          print('Exact Windows-verified longterm envelope; legacy bridge unchanged.')
+          PY
+      - name: Promote existing immutable asset without replacement
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view v0.1.24 --json assets > /tmp/assets.json
+          python3 - <<'PY'
+          import json
+          a=json.load(open('/tmp/assets.json'))['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.24.ecuss-update.zip' and a[0]['size']==12449656
+          PY
+          gh release edit v0.1.24 --prerelease=false --latest=true --title 'Master v0.1.24' --notes-file releases/v0.1.24/NOTES.md
