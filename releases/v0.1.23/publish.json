@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "version": "0.1.23",
+  "profile": "master",
+  "assets": [
+    {
+      "path": "packages/v0.1.23/TRADE_OPERATIONS_SUITE_Master_v0.1.23.ecuss-update.zip",
+      "bytes": 12449900,
+      "sha256": "30d43a877f5a349f0b8cadd3887299b42fa677a03f7678c45bd30df5be989d0f"
+    }
+  ]
+}
