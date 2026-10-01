@@ -19,7 +19,7 @@ jobs:
           assert hashlib.sha256(raw).hexdigest()=='238cf475f6b03f4cd7bbaf3d6d6db06fcfaa1af862798b088e15db0486cc3b5d'
           payload=base64.b64decode(json.loads(raw)['payload'])
           assert hashlib.sha256(payload).hexdigest()=='3661ee531dacd48d2a5cfebaff102f9aa614de8ec46eb389e3445287c50d5a11'
-          data=json.loads(payload);assert data['sequence']==6 and data['catalog']['appVersion']=='0.1.21' and data['catalog']['profiles']==['master']
+          data=json.loads(payload);assert data['sequence']==6 and data['catalog']['appVersion']=='0.1.22' and data['catalog']['profiles']==['master']
           p=data['catalog']['packages'][0]
           assert p['sha256']=='630c17125ef3b5c8a05041f4c7178a9343919e179daf859f83e47d078af897ae'
           longraw=pathlib.Path('updates/stable-longterm.signed.json').read_bytes()
