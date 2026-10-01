@@ -1,0 +1,55 @@
+name: Publish verified Master v0.1.22 candidate
+on:
+  push:
+    branches: [main]
+    paths: ['packages/v0.1.22/**', 'releases/v0.1.22/**', '.github/workflows/publish-v022.yml']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: publish-v022
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Verify approved bytes and complete public inventory
+        run: |
+          python3 - <<'PY'
+          import hashlib,json,pathlib,zipfile
+          m=json.loads(pathlib.Path('releases/v0.1.22/publish.json').read_text())
+          assert m['schema']==1 and m['version']=='0.1.22' and len(m['assets'])==1
+          for a in m['assets']:
+              assert a['path']=='packages/v0.1.22/TRADE_OPERATIONS_SUITE_Master_v0.1.22.ecuss-update.zip'
+              p=pathlib.Path(a['path']); b=p.read_bytes()
+              assert len(b)==a['bytes'] and hashlib.sha256(b).hexdigest()==a['sha256']
+              with zipfile.ZipFile(p) as z:
+                  assert z.testzip() is None
+                  d=json.loads(z.read('manifest.json'))
+                  assert d['appVersion']=='0.1.22' and d['profile']=='master'
+                  assert set(z.namelist())=={f['path'] for f in d['files']}|{'manifest.json'}
+                  assert not any(n.startswith('modules/balance-ecuss/') or n.endswith(('.pfx','.msg','.xlsx')) for n in z.namelist())
+                  for f in d['files']:
+                      data=z.read(f['path']); assert len(data)==f['size'] and hashlib.sha256(data).hexdigest()==f['sha256']
+          print('Approved asset length, hash, inventory and personal-file exclusions verified.')
+          PY
+      - name: Publish immutable candidate asset without activating the update feed
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.1.22 >/dev/null 2>&1; then
+            echo 'Release already exists; refusing replacement.'
+            exit 1
+          fi
+          gh release create v0.1.22 packages/v0.1.22/TRADE_OPERATIONS_SUITE_Master_v0.1.22.ecuss-update.zip --target "$GITHUB_SHA" --title 'Master v0.1.22 — public update validation candidate' --notes-file releases/v0.1.22/NOTES.md --prerelease --latest=false
+      - name: Check actual anonymous download
+        run: |
+          curl --fail --location --proto '=https' --proto-redir '=https' --retry 2 --output /tmp/ecuss-v022.zip 'https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases/download/v0.1.22/TRADE_OPERATIONS_SUITE_Master_v0.1.22.ecuss-update.zip'
+          python3 - <<'PY'
+          import hashlib,json,pathlib
+          a=json.loads(pathlib.Path('releases/v0.1.22/publish.json').read_text())['assets'][0]
+          p=pathlib.Path('/tmp/ecuss-v022.zip'); assert p.stat().st_size==a['bytes'] and hashlib.sha256(p.read_bytes()).hexdigest()==a['sha256']
+          print('Anonymous complete download and SHA-256 verified. Stable feed is unchanged.')
+          PY

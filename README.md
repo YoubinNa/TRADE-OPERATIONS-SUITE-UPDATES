@@ -26,3 +26,7 @@
 - 배포자는 승인 목록마다 기존 키로 서명합니다. 이용자는 서명키·GitHub 토큰을 만들거나 입력하지 않습니다.
 
 [변경 내용](releases/v0.1.21/NOTES.md) · [배포 관리 기준](DISTRIBUTION_POLICY.md) · [공식 Releases](https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases)
+
+## 후속 검토본 v0.1.22
+
+메일 제목·회사별 초안 및 참조처 선택 개선을 포함한 [Master v0.1.22 후보](releases/v0.1.22/NOTES.md)를 다운로드 검사 중입니다. 활성 목록은 v0.1.21을 유지하며, v0.1.22는 배포자 서명·운영 검증 후 활성화합니다. 개인 메일 설정은 공개 파일에 포함하지 않습니다.
