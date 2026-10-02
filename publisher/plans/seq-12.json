@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "payloadSha256": "0c5654dd988f94f20bfa09967ec218e9ee061cfe2dbfe1386484e33f721d1761",
+  "requiredActiveVersion": "0.1.26",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    36977422120,
+    36984347946
+  ],
+  "predecessorPcAcceptedAt": "2026-10-02T17:24:22+09:00",
+  "scope": "Master v0.1.27 customs inspection activation only; User formal release excluded"
+}
