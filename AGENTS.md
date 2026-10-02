@@ -9,3 +9,5 @@
 - Preserve explicit Master release approval and do not treat a module commit as integration release approval.
 - No end-user login, GitHub token, paid service, or device-registration dependency.
 - User instructions take precedence; do not claim unperformed Windows/user-PC testing.
+
+- 2026-10-02 explicit Master instruction: completing requested improvements does NOT authorize sending a Master Signing request. Obtain explicit approval before setting `publisher/current-request.json` to ready or asking the helper to sign, unless the user explicitly instructed sending it after completion. After an approved request is signed and delivered, retain automatic validation and publication without a chat acknowledgment.
