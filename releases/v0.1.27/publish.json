@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "version": "0.1.27",
+  "status": "signature-pending-candidate",
+  "masterRequested": "2026-10-02T17:24:22+09:00",
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.27/TRADE_OPERATIONS_SUITE_Master_v0.1.27.ecuss-update.zip",
+      "releaseId": "desktop-0.1.27-master-r20261002.1",
+      "bytes": 12514265,
+      "sha256": "2b8f91ce8904115643f3748111885c1fe6f7c59a18382983f46fcc750710850a",
+      "payloadFiles": 74
+    }
+  ]
+}
