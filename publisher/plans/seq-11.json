@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "payloadSha256": "7b3d64f24f4f838b4684b5b2ada443e1b43ab3976a2e59150087d268ca748e10",
+  "requiredActiveVersion": "0.1.25",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [36975776926, 36976568097],
+  "scope": "Master v0.1.26 only; v0.1.27 awaits actual PC transition acceptance"
+}

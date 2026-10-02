@@ -1,0 +1,60 @@
+name: Automatically verify and publish Master-signed updates
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'publisher/inbox/*.signed.json'
+      - 'publisher/plans/*.json'
+      - 'publisher/automation/**'
+      - '.github/workflows/auto-publish-signed.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: master-longterm-publication
+  cancel-in-progress: false
+jobs:
+  verify-and-publish:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - name: Preserve immutable bytes
+        shell: pwsh
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: main
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Regression tests for publication gates
+        shell: pwsh
+        run: python -B publisher/automation/test_verify.py
+      - name: Match received signature to current approved candidate
+        id: candidate
+        shell: pwsh
+        run: python -B publisher/automation/pipeline.py prepare
+      - name: Verify both production executables, anonymous download, apply and rollback
+        if: steps.candidate.outputs.ready == 'true'
+        shell: pwsh
+        run: python -B publisher/automation/pipeline.py probe
+      - name: Publish only after all gates pass
+        if: steps.candidate.outputs.ready == 'true'
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh auth setup-git
+          python -B publisher/automation/pipeline.py publish
+          if ($LASTEXITCODE -ne 0) { throw 'Publication did not complete' }
+          python -B publisher/automation/pipeline.py finish
+          if ($LASTEXITCODE -ne 0) { throw 'Public verification did not complete; rerun resumes safely' }
+      - name: Display result
+        if: always()
+        shell: pwsh
+        run: |
+          if (Test-Path publisher/status.json) { Get-Content publisher/status.json | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append }
+          'Failures preserve the previously verified feed until the Windows gates pass. See this run for details. Actual PC acceptance remains separate.' | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append

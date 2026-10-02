@@ -1,5 +1,8 @@
 # TRADE OPERATIONS SUITE — 공개 업데이트 배포
 
+**서명 전달 후 자동 검증·배포 연결 중.** Master 도우미에서 승인·서명·전달하면 GitHub Actions가 검증·온라인 게시를 이어갑니다. 대화 완료 메시지는 필요 없습니다. [진행 상태와 절차](publisher/automation/README.md). 아래 활성 버전은 이전 게시 기록이며 최신 완료 상태는 `publisher/status.json`과 장기 서명 목록을 확인합니다.
+
+
 **v0.1.26 번역 복구·업무 도구 등록 전환본 서명 요청 준비 완료.** 공개 후보와 실제 Windows 검증을 마쳤습니다. 설치된 Master 도우미에서 v26/순번11/2099년 말 만료를 확인하고 승인·서명·전달을 실행합니다. 활성본은 아래 v25를 유지하며 새 서명 검증 후 전환합니다. [변경 안내](releases/v0.1.26/NOTES.md).
 
 **현재 활성 온라인 업데이트: Master v0.1.25 / 장기 순번 10.** 승인된 AMOVINA REVIEW18과 AMOGREEN VINA V1.0.3을 반영했습니다. [변경 내용](releases/v0.1.25/NOTES.md).
