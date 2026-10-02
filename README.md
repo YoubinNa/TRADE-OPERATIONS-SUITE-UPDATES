@@ -1,32 +1,27 @@
 # TRADE OPERATIONS SUITE — 공개 업데이트 배포
 
-**서명 전달 후 자동 검증·배포 연결 중.** Master 도우미에서 승인·서명·전달하면 GitHub Actions가 검증·온라인 게시를 이어갑니다. 대화 완료 메시지는 필요 없습니다. [진행 상태와 절차](publisher/automation/README.md). 아래 활성 버전은 이전 게시 기록이며 최신 완료 상태는 `publisher/status.json`과 장기 서명 목록을 확인합니다.
+**2026-10-02 17:19 KST: Master v0.1.26 / 장기 순번11 자동 검증·온라인 배포 완료.** 번역 입력·실행 연결 오류 수정과 업무 도구 등록 전환본입니다. 기존 업무 기준·Glass UI·설정·결과 보존을 유지합니다. [변경 내용](releases/v0.1.26/NOTES.md).
 
+## 최신 상태 확인
 
-**v0.1.26 번역 복구·업무 도구 등록 전환본 서명 요청 준비 완료.** 공개 후보와 실제 Windows 검증을 마쳤습니다. 설치된 Master 도우미에서 v26/순번11/2099년 말 만료를 확인하고 승인·서명·전달을 실행합니다. 활성본은 아래 v25를 유지하며 새 서명 검증 후 전환합니다. [변경 안내](releases/v0.1.26/NOTES.md).
+- [자동 게시 완료 상태](publisher/status.json) — 게시 버전·순번·검증 결과·실행 기록
+- [현재 Master 서명 요청](publisher/current-request.json) — ready는 승인 요청, idle는 추가 서명 불필요
+- [활성 장기 서명 목록](updates/stable-longterm.signed.json)
+- [자동 검증·게시 진행/실패 기록](https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/workflows/auto-publish-signed.yml)
+- [정식 Releases](https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases)
 
-**현재 활성 온라인 업데이트: Master v0.1.25 / 장기 순번 10.** 승인된 AMOVINA REVIEW18과 AMOGREEN VINA V1.0.3을 반영했습니다. [변경 내용](releases/v0.1.25/NOTES.md).
+## Master 서명 후 자동 배포
 
-- AMOVINA: NG 자재·제품 5개 대상 하단 합계 및 저장 후 서식 유지 개선. 모듈 1.0.1.18 / 지침 1.0.1-review.18.
-- AMOGREEN VINA: Summary Liquidation과 Sumarize WIP 각각의 고유 양식 보존. 모듈 1.0.3.1 / 지침 1.0.3.
-- 나머지 모듈·Glass UI·배율·개인 메일 설정·선택 저장·업데이트/복구 유지.
-- 참고·완성 Excel, 실제 업무 원본, 개인 메일 자산·토큰·개인키는 포함하지 않습니다.
+기존 도우미 v1.1.1에서 **승인 · 서명 · 전달**을 누르면 서명 수신 → 운영 서명·요청·패키지 검증 → Windows 실제 다운로드·적용/복구 검사 → 온라인 목록 게시가 자동 진행됩니다. 대화에 완료 메시지를 입력할 필요가 없습니다. 도우미 재설치·재서명·개인키 전송은 필요 없습니다. [절차와 실패 복구](publisher/automation/README.md).
 
-기존 Master는 **최신 여부 확인 → 업데이트 다운로드 → 적용·재시작**으로 갱신합니다. 새 Setup·GitHub 로그인·토큰 입력은 필요하지 않습니다. 일반 이용자는 서명키나 서명 도우미를 사용하지 않습니다.
+도우미의 ‘자동 전달 완료’는 접수 상태이며 서버 검증·게시 완료와 구분합니다. 검사 실패 시 새 목록을 게시하지 않습니다. 게시 후 공개 조회/Release 전환 실패는 실행 기록에 표시되며 동일 서명을 재사용해 완료 단계를 복구합니다.
 
-2026-10-02 Master 도우미의 서명 자동 전달을 수신하고 기존 운영 공개키·검토한 payload·불변 패키지를 검증했습니다. Windows v0.1.24/v0.1.25 실행파일의 서명된 다운로드·적용/복구·설정/결과 보존 검사를 통과한 목록입니다. v0.1.25의 실제 사용자 PC 온라인 적용·Excel 확인은 아직 남아 있습니다. User 정식 배포와 공개 최초 Setup은 별도입니다.
+## 프로그램 업데이트
 
-| 목록 | 제공 버전 | 순번 | 유효기한(UTC) |
-|---|---|---:|---|
-| [구버전 전환 목록](updates/stable.signed.json) | v0.1.22 | 6 | 2026-12-29 00:00 |
-| [장기 목록](updates/stable-longterm.signed.json) | v0.1.25 | 10 | 2099-12-31 23:59:59 |
+기존 Master는 **최신 여부 확인 → 업데이트 다운로드 → 적용·재시작**으로 갱신합니다. 새 Setup·GitHub 로그인·토큰 입력은 필요하지 않습니다. 일반 이용자는 서명 도우미를 사용하지 않습니다.
 
-기존 v0.1.20 이하 공개 채널 앱은 전환 목록을 거쳐 장기 채널을 이용합니다. 검증키·서명·패키지 크기/해시·호환·순번 역행 방지 검사를 유지합니다.
+v0.1.26은 15개 게이트 회귀 검사 및 실제 v25/v26 Windows 실행파일 총36개 검사를 통과했습니다. 무인증 실제 패키지 다운로드, 서명된 적용/복구, 합성 설정·결과 보존을 확인했습니다. 실제 사용자 PC 적용·번역 업무 확인은 별도입니다. v27 세관 검수비용 활성화는 v26 PC 전환 확인 후 준비합니다. User 정식 배포는 별도입니다.
 
-- [Master v0.1.25 Release](https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases/tag/v0.1.25)
-- 크기: 12,466,387 bytes
-- SHA-256: `25dfc59215b9f3db5eeae8f8958c168175d764d52648f18d17b8a86591beb012`
+구버전 전환 목록 `updates/stable.signed.json`의 v22/순번6은 유지합니다. 최신 승인 대상은 장기 목록이며 개발 커밋을 실행 앱에 자동 적용하지 않습니다. 기존 배포 파일은 같은 버전으로 덮어쓰지 않습니다. 공개 배포가 별도 오픈소스 라이선스 부여를 뜻하지 않으며 제3자 구성요소에는 각 라이선스가 적용됩니다.
 
-새 버전마다 배포자는 서명합니다. [서명 도우미 v1.1.1](publisher/assistant-v1.1.1/README.md)은 최초 게시 연결 후 승인·서명·결과 자동 전달을 한 번에 수행합니다. v25 요청은 처리되어 추가 서명이 필요하지 않습니다. 공개 배포가 별도 오픈소스 라이선스 부여를 뜻하지 않으며 제3자 구성요소에는 각 라이선스가 적용됩니다.
-
-[배포 관리 기준](DISTRIBUTION_POLICY.md) · [공식 Releases](https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases)
+[배포 관리 기준](DISTRIBUTION_POLICY.md)
