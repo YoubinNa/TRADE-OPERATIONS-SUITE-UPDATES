@@ -44,6 +44,7 @@ static class PackageProbe {
         try{
             var store=new ReleaseStore(Path.Combine(work,"data"));store.InstallSeed(args[0]);
             Directory.CreateDirectory(Path.Combine(store.Root,"Updates"));
+            Directory.CreateDirectory(Path.GetDirectoryName(SignedUpdates.CachePath(store.Root)));
             File.WriteAllText(SignedUpdates.CachePath(store.Root),envelope);
             File.WriteAllText(Path.Combine(store.Root,"synthetic-settings.txt"),"settings");
             File.WriteAllText(Path.Combine(store.Root,"synthetic-result.txt"),"result");

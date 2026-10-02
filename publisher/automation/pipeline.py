@@ -7,7 +7,11 @@ WORK=Path(os.environ.get('RUNNER_TEMP', str(ROOT.parent/'auto-publish-temp')))/'
 FEED='updates/stable-longterm.signed.json'
 
 def run(*args, **kw):
-    return subprocess.check_output([str(a) for a in args], **kw).decode('utf-8').strip()
+    try:
+        return subprocess.check_output([str(a) for a in args], **kw).decode('utf-8').strip()
+    except subprocess.CalledProcessError as e:
+        print(e.output.decode('utf-8', errors='replace'))
+        raise
 
 def write(p,d):
     p.parent.mkdir(parents=True,exist_ok=True)
