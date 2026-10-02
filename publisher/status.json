@@ -1,13 +1,13 @@
 {
   "schema": 1,
   "state": "completed",
-  "version": "0.1.26",
-  "sequence": 11,
+  "version": "0.1.27",
+  "sequence": 12,
   "windowsChecks": 36,
   "productionSignatureVerified": true,
   "anonymousPackageDownloads": 2,
   "publicFeedVerified": true,
   "applyRollbackAndDataPreservation": true,
-  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/36983341793",
+  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/36984741963",
   "userPcVerified": false
 }
