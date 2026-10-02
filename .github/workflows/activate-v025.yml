@@ -1,0 +1,35 @@
+name: Promote verified Master v0.1.25
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/activate-v025.yml']
+permissions:
+  contents: write
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Check exact verified feed and unchanged release asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import base64,hashlib,json,pathlib,subprocess
+          raw=pathlib.Path('updates/stable-longterm.signed.json').read_bytes()
+          assert hashlib.sha256(raw).hexdigest()=='077844789b4d4b915e9a11eb1faa0566c8002f29571985d68e306a25b49ed01d'
+          envelope=json.loads(raw);payload=base64.b64decode(envelope['payload'],validate=True)
+          assert hashlib.sha256(payload).hexdigest()=='3a9e22a355482fa1f065734697e882f54b06f6efef40bda39f16a3e5dcafdc6d'
+          d=json.loads(payload);assert d['sequence']==10 and d['catalog']['appVersion']=='0.1.25'
+          release=json.loads(subprocess.check_output(['gh','api','repos/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/releases/tags/v0.1.25']))
+          assert not release['draft'] and len(release['assets'])==1
+          a=release['assets'][0];assert a['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.25.ecuss-update.zip' and a['size']==12466387
+          assert a['digest']=='sha256:25dfc59215b9f3db5eeae8f8958c168175d764d52648f18d17b8a86591beb012'
+          print('Exact verified feed and immutable release asset confirmed.')
+          PY
+      - name: Mark verified release as stable and latest without replacing assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh release edit v0.1.25 --prerelease=false --latest --title 'TRADE OPERATIONS SUITE — Master v0.1.25' --notes-file releases/v0.1.25/NOTES.md

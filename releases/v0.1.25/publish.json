@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "version": "0.1.25",
-  "status": "signature-pending-candidate",
+  "status": "master-signed-stable",
   "masterApproved": "2026-10-02T14:46:41+09:00",
   "assets": [
     {
@@ -12,5 +12,9 @@
       "sha256": "25dfc59215b9f3db5eeae8f8958c168175d764d52648f18d17b8a86591beb012",
       "payloadFiles": 72
     }
-  ]
+  ],
+  "sequence": 10,
+  "expiresAt": "2099-12-31T23:59:59.0000000+00:00",
+  "signatureEnvelopeSha256": "077844789b4d4b915e9a11eb1faa0566c8002f29571985d68e306a25b49ed01d",
+  "userPcVerified": false
 }

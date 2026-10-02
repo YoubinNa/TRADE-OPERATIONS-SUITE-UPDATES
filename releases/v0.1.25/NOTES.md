@@ -1,6 +1,6 @@
 # TRADE OPERATIONS SUITE — Master v0.1.25
 
-승인된 두 수책재고 취합 모듈을 반영한 업데이트 후보입니다. 운영 서명·게시 검증 전에는 기존 v0.1.24 활성 목록을 유지합니다.
+승인된 두 수책재고 취합 모듈을 반영한 Master 온라인 업데이트입니다. 운영 서명과 Windows 적용·복구 검증 후 장기 순번10으로 활성화했습니다. 사용자 PC 적용 확인은 남아 있습니다.
 
 - AMOVINA REVIEW18: NG 자재·제품 5개 대상의 하단 합계 및 저장 후 서식 유지 개선. 모듈 1.0.1.18 / 지침 1.0.1-review.18.
 - AMOGREEN VINA V1.0.3: Summary Liquidation과 Sumarize WIP의 고유 양식 보존. 모듈 1.0.3.1 / 지침 1.0.3.
