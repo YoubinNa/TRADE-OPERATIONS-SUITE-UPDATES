@@ -1,0 +1,16 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "payloadSha256": "0c0056d33979b9f191f988522fb5567112475606948ba5ad492a5881ff32b84d",
+  "requiredActiveVersion": "0.1.33",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37114177752"
+  ],
+  "masterReleaseApprovedAt": "2026-10-03T15:01:45+09:00",
+  "updateMode": "online",
+  "legacyImportExplicitlyApproved": false,
+  "legacyOnlineNewModuleRejected": false,
+  "scope": "Approved Master release only; User formal release excluded"
+}
