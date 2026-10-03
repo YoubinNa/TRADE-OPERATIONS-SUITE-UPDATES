@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "payloadSha256": "3e6859c117df1238309c1ec1273508207c121a250c4eac0bba002b7e86d234f2",
+  "requiredActiveVersion": "0.1.27",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    37082094404,
+    37084095073
+  ],
+  "masterReleaseApprovedAt": "2026-10-03T09:38:38+09:00",
+  "updateMode": "legacy-import-once",
+  "legacyImportExplicitlyApproved": true,
+  "legacyOnlineNewModuleRejected": true,
+  "scope": "Master v0.1.30 single full update; one legacy import from v27; User formal release excluded"
+}
