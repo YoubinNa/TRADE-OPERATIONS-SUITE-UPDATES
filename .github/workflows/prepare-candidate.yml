@@ -1,0 +1,74 @@
+name: Prepare approved Master candidate and send signing request
+on:
+  push:
+    branches: [main]
+    paths: ['publisher/candidates/*.json']
+  workflow_dispatch:
+    inputs:
+      candidate:
+        description: Approved publisher/candidates/vX.Y.Z.json
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: master-longterm-publication
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - shell: pwsh
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Resolve one approved candidate
+        id: spec
+        shell: pwsh
+        env:
+          CANDIDATE: ${{ inputs.candidate }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          if ($env:CANDIDATE) { $path = $env:CANDIDATE }
+          else {
+            $paths = @(git diff --name-only $env:BEFORE HEAD -- 'publisher/candidates/*.json')
+            if ($paths.Count -ne 1) { throw 'Exactly one approved candidate is required' }
+            $path = $paths[0]
+          }
+          if ($path -notmatch '^publisher/candidates/v0\.\d+\.\d+\.json$') { throw 'Invalid candidate path' }
+          "path=$path" >> $env:GITHUB_OUTPUT
+      - name: Verify approval and stage immutable public bytes
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SPEC: ${{ steps.spec.outputs.path }}
+        run: |
+          gh auth setup-git
+          python -B publisher/automation/candidate.py stage $env:SPEC
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate staging failed' }
+      - name: Verify public download and installed signing helper
+        shell: pwsh
+        env:
+          SPEC: ${{ steps.spec.outputs.path }}
+        run: |
+          python -B publisher/automation/test_verify.py
+          if ($LASTEXITCODE -ne 0) { throw 'Publication gates failed' }
+          python -B publisher/automation/test_release_speed.py
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate gates failed' }
+          python -B publisher/automation/preflight_candidate.py $env:SPEC
+          if ($LASTEXITCODE -ne 0) { throw 'Windows preflight failed' }
+      - name: Send exact verified request under existing explicit approval
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SPEC: ${{ steps.spec.outputs.path }}
+        run: |
+          python -B publisher/automation/candidate.py activate $env:SPEC
+          if ($LASTEXITCODE -ne 0) { throw 'Request activation failed; no force push' }
+          'Approved candidate passed Windows preflight; signing request is ready. Signing and automatic publication remain separate.' >> $env:GITHUB_STEP_SUMMARY

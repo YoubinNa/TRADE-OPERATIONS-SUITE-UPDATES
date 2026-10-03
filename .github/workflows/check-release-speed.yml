@@ -1,0 +1,41 @@
+name: Verify reusable release preparation without sending a request
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'publisher/automation/candidate.py'
+      - 'publisher/automation/preflight_candidate.py'
+      - 'publisher/automation/CandidateDownloadProbe.cs'
+      - 'publisher/automation/CheckCandidateRequest.ps1'
+      - 'publisher/automation/test_release_speed.py'
+      - 'publisher/automation/check_candidate_replay.py'
+      - '.github/workflows/check-release-speed.yml'
+      - '.github/workflows/prepare-candidate.yml'
+permissions:
+  contents: read
+jobs:
+  replay:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - shell: pwsh
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+      - name: Candidate approval, retry and transfer gates
+        shell: pwsh
+        run: |
+          python -B publisher/automation/test_release_speed.py
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate regression failed' }
+          python -B publisher/automation/test_public_feed.py
+          if ($LASTEXITCODE -ne 0) { throw 'Public feed regression failed' }
+      - name: Actual Windows and installed helper replay; no request activation
+        shell: pwsh
+        run: |
+          python -B publisher/automation/check_candidate_replay.py
+          if ($LASTEXITCODE -ne 0) { throw 'Candidate replay failed' }
