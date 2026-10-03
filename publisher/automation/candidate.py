@@ -10,6 +10,7 @@ import re
 import shutil
 import subprocess
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 from verify import archive, require, sha, signature, strict_json, update_mode, REPO
 
@@ -139,6 +140,8 @@ def activate(s):
     # Copy exact helper-tested bytes; do not serialize or regenerate the signed payload.
     (ROOT/'publisher/current-request.json').write_bytes((ROOT/request_path).read_bytes())
     evidence['currentRequestActivated'] = True
+    evidence['requestReadyAt'] = datetime.now(timezone.utc).isoformat()
+    evidence['masterReleaseApprovedAt'] = s['approval']['approvedAt']
     write(ROOT/evidence_path, evidence)
     commit([request_path,evidence_path,plan_path,'publisher/current-request.json'], f'publisher: checked approved request ready for v{version}')
     print('SIGNING REQUEST READY; no extra chat acknowledgement required.', flush=True)

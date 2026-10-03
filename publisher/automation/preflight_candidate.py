@@ -1,5 +1,5 @@
 """Public Windows preflight. Does not sign, activate a feed, or set the current request."""
-import base64,json,os,shutil,subprocess,sys,zipfile,re
+import base64,json,os,shutil,subprocess,sys,zipfile,re,time
 from candidate import load_spec, check_predecessor
 from pathlib import Path
 from datetime import datetime,timezone
@@ -11,6 +11,7 @@ def run(*args):
     require(r.returncode==0,'Public preflight command failed');return r.stdout
 def write(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_text(json.dumps(value,ensure_ascii=False,indent=2)+'\n',encoding='utf-8',newline='\n')
 def main():
+    started=time.monotonic()
     spec=load_spec(sys.argv[1]);version=spec['version'];sequence=spec['sequence']
     require(os.name=='nt' and not WORK.exists(),'Fresh Windows preflight required');WORK.mkdir()
     previous=(ROOT/'updates/stable-longterm.signed.json').read_bytes();_,old,_=signature(previous)
@@ -54,6 +55,6 @@ def main():
     helper=WORK/'helper/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1/Publisher.Core.psm1'
     require('HELPER_CHECKS=7' in run('powershell','-NoProfile','-File',ROOT/'publisher/automation/CheckCandidateRequest.ps1',helper,request_path,ROOT/'updates/stable-longterm.signed.json',WORK/'history',version,str(sequence),p['sha256']),'Helper request validation incomplete')
     write(ROOT/f'publisher/requests/v{version}.json',request)
-    write(ROOT/f'releases/v{version}/PREFLIGHT.json',dict(schema=1,version=version,sequence=sequence,packageCommit=p['commit'],packageSha256=p['sha256'],payloadSha256=sha(raw),windowsPublicDownloadChecks=14,helperRequestChecks=7,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL']))
+    write(ROOT/f'releases/v{version}/PREFLIGHT.json',dict(schema=1,version=version,sequence=sequence,packageCommit=p['commit'],packageSha256=p['sha256'],payloadSha256=sha(raw),windowsPublicDownloadChecks=14,helperRequestChecks=7,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
     print('PUBLIC PREFLIGHT COMPLETE; activate step sends this exact request under the recorded approval.')
 if __name__=='__main__':main()
