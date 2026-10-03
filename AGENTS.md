@@ -11,3 +11,5 @@
 - User instructions take precedence; do not claim unperformed Windows/user-PC testing.
 
 - 2026-10-02 explicit Master instruction: completing requested improvements does NOT authorize sending a Master Signing request. Obtain explicit approval before setting `publisher/current-request.json` to ready or asking the helper to sign, unless the user explicitly instructed sending it after completion. After an approved request is signed and delivered, retain automatic validation and publication without a chat acknowledgment.
+
+- 2026-10-03 Master/User synchronization: after the first paired Beta, require both profiles in every release with identical app/module/rules/core versions. Prepare both packages/installers together, send one signing request, verify both profiles and activate one signed feed atomically. Permission/mail/presentation differences remain intentional. Never publish a Master-only update after a paired release or call queued/offline PCs synchronized installations.
