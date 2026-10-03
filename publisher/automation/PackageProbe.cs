@@ -38,7 +38,7 @@ static class PackageProbe {
         var current=await PublicUpdateCheck.Run(next,nextRegistry,envelope,feed,(text,c)=>{},"online");
         Check(current.state=="current" && !current.downloadAvailable,"new version reports current");
         var package=OnlinePackage.Select(signed.catalog,old,registry);
-        Check(package!=null && package.profile=="master" && package.releaseId==next.releaseId,"signed package selection");
+        Check(package!=null && package.profile==old.profile && old.profile==DistributionProfile.Id && package.releaseId==next.releaseId,"signed package selection");
         string work=Path.Combine(Path.GetTempPath(),"suite-distribution-probe-"+Guid.NewGuid().ToString("N"));
         Directory.CreateDirectory(work);
         try{

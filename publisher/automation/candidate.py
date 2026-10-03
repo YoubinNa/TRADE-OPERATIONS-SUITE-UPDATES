@@ -24,6 +24,9 @@ def write(path, value):
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2)+'\n', encoding='utf-8', newline='\n')
 
 def validate_spec(s):
+    if len(s.get('assets', [])) == 2:
+        from paired_candidate import validate_pair
+        return validate_pair(s)
     require(s.get('schema') == 1 and re.fullmatch(r'0\.\d+\.\d+', s.get('version', '')), 'Candidate version/schema')
     require(type(s.get('sequence')) is int and s['sequence'] > 0, 'Sequence')
     require(s.get('publicContentReviewed') is True and s.get('windowsCandidateVerified') is True, 'Review incomplete')
@@ -68,6 +71,8 @@ def decode_transfer(root, s):
     archive(path, dict(p, appVersion=s['version']))
 
 def check_predecessor(s, previous):
+    if previous['catalog'].get('profiles') == ['master','user']:
+        require([p['profile'] for p in s.get('assets',[])] == ['master','user'], 'A paired release cannot regress to a single-profile update')
     require(previous['catalog']['appVersion'] == s['requiredActiveVersion'], 'Active predecessor changed')
     require(s['sequence'] > previous['sequence'], 'Sequence rollback')
     version = lambda x: tuple(map(int, x.split('.')))
@@ -85,6 +90,9 @@ def commit(paths, message):
         run('git', 'push', 'origin', 'HEAD:refs/heads/main')  # Never force a concurrent change.
 
 def stage(s):
+    if len(s['assets']) == 2:
+        from paired_candidate import stage_pair
+        return stage_pair(s)
     _, previous, _ = signature((ROOT/'updates/stable-longterm.signed.json').read_bytes())
     check_predecessor(s, previous)
     current = strict_json((ROOT/'publisher/current-request.json').read_bytes())
@@ -115,6 +123,9 @@ def stage(s):
         run('gh', 'release', 'create', 'v'+s['version'], p['path'], '--target', package_commit, '--title', 'Master v'+s['version']+' — signing candidate', '--notes-file', str(folder/'NOTES.md'), '--prerelease', '--latest=false')
 
 def activation(s, request, evidence, previous, current):
+    if len(s['assets']) == 2:
+        from paired_candidate import activation_pair
+        return activation_pair(s,request,evidence,previous,current)
     validate_spec(s); check_predecessor(s, previous); check_slot(current, request)
     payload = base64.b64decode(request['payload'], validate=True)
     require(request['payloadSha256'] == sha(payload) == evidence['payloadSha256'], 'Checked request changed')

@@ -1,4 +1,4 @@
-name: Automatically verify and publish Master-signed updates
+name: Verify one signature and publish synchronized updates
 on:
   push:
     branches: [main]
@@ -37,6 +37,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Publication gate tests failed' }
           python -B publisher/automation/test_public_feed.py
           if ($LASTEXITCODE -ne 0) { throw 'Public feed tests failed' }
+          python -B publisher/automation/test_paired_candidate.py
+          if ($LASTEXITCODE -ne 0) { throw 'Paired publication tests failed' }
       - name: Match received signature to current approved candidate
         id: candidate
         shell: pwsh

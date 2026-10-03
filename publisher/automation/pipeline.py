@@ -126,4 +126,10 @@ def finish():
     print('COMPLETE: signed receipt -> Windows checks -> public activation. No chat acknowledgement required.')
 
 if __name__=='__main__':
-    {'prepare':prepare,'probe':probe,'publish':publish,'finish':finish}[sys.argv[1]]()
+    request=strict_json((ROOT/'publisher/current-request.json').read_bytes())
+    paired=request.get('state')=='ready' and len(strict_json(__import__('base64').b64decode(request['payload']))['catalog']['profiles'])==2
+    if paired:
+        import paired_pipeline
+        getattr(paired_pipeline,sys.argv[1])()
+    else:
+        {'prepare':prepare,'probe':probe,'publish':publish,'finish':finish}[sys.argv[1]]()

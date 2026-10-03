@@ -45,14 +45,20 @@ def signature(raw, check_time=True):
     c = d['catalog']
     require(c['schema'] == 1 and c['product'] == d['product'], 'Catalog schema/product')
     require(re.fullmatch(r'\d+\.\d+\.\d+', c['appVersion']), 'Invalid version')
-    require(c['profiles'] == ['master'] and len(c['packages']) == 1, 'Only approved Master channel supported')
-    p = c['packages'][0]
-    require(p['profile'] == 'master' and p['repository'] == REPO and p['appVersion'] == c['appVersion'], 'Package identity')
-    require(re.fullmatch('[0-9a-f]{40}', p['commit']) and re.fullmatch('[0-9a-f]{64}', p['sha256']), 'Invalid immutable identity')
-    require(type(p['bytes']) is int and 0 < p['bytes'] <= 100*1024*1024, 'Package size')
-    require(p['path'] == f"packages/v{c['appVersion']}/TRADE_OPERATIONS_SUITE_Master_v{c['appVersion']}.ecuss-update.zip", 'Unexpected package path')
-    require(p['launcherApi'] == 4, 'Unsupported launcher API; explicit new compatibility review required')
+    catalog_identity(c)
     return e, d, sha(data)
+
+def catalog_identity(c):
+    require(c['profiles'] in (['master'], ['master','user']), 'Unsupported distribution profiles')
+    require([p['profile'] for p in c['packages']]==c['profiles'], 'Incomplete or duplicate paired packages')
+    for p in c['packages']:
+        require(p['repository']==REPO and p['appVersion']==c['appVersion'], 'Package identity')
+        require(re.fullmatch('[0-9a-f]{40}',p['commit']) and re.fullmatch('[0-9a-f]{64}',p['sha256']), 'Invalid immutable identity')
+        require(type(p['bytes']) is int and 0<p['bytes']<=64*1024*1024, 'Package size')
+        require(p['path']==f"packages/v{c['appVersion']}/TRADE_OPERATIONS_SUITE_{p['profile'].title()}_v{c['appVersion']}.ecuss-update.zip", 'Unexpected package path')
+        require(p['launcherApi']==4, 'Unsupported launcher API')
+    if len(c['profiles'])==2:
+        require(len({p['commit'] for p in c['packages']})==1, 'Paired packages require one immutable commit')
 
 def ready(root):
     request_raw = (root/'publisher/current-request.json').read_bytes()

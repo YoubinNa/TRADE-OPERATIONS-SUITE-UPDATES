@@ -28,9 +28,9 @@ internal static class CandidateDownloadProbe
         var installed=PackagePolicy.VerifyDirectory(args[0]);
         var registry=Json.Read<RepositoryRegistry>(File.ReadAllText(Path.Combine(args[0],"module-sources.json")));
         var catalog=Json.Read<UpdateCatalog>(File.ReadAllText(args[1]));
-        var package=catalog.packages.Single(x=>x.profile=="master");
+        var package=catalog.packages.Single(x=>x.profile==installed.profile);
         OnlinePackage.Validate(package,registry);
-        Check(installed.profile=="master" && package.appVersion==catalog.appVersion,"actual Master assembly validates candidate metadata");
+        Check(installed.profile==DistributionProfile.Id && package.appVersion==catalog.appVersion,"actual profile assembly validates candidate metadata");
         var work=Path.Combine(Path.GetTempPath(),"ecuss-public-download-"+Guid.NewGuid().ToString("N"));Directory.CreateDirectory(work);
         try{
             var handler=new AnonymousOnlyHandler();

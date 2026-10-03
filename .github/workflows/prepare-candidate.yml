@@ -1,4 +1,4 @@
-name: Prepare approved Master candidate and send signing request
+name: Prepare approved synchronized candidate and send one signing request
 on:
   push:
     branches: [main]
@@ -16,7 +16,7 @@ concurrency:
 jobs:
   candidate:
     runs-on: windows-2022
-    timeout-minutes: 15
+    timeout-minutes: 25
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
@@ -61,6 +61,8 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Publication gates failed' }
           python -B publisher/automation/test_release_speed.py
           if ($LASTEXITCODE -ne 0) { throw 'Candidate gates failed' }
+          python -B publisher/automation/test_paired_candidate.py
+          if ($LASTEXITCODE -ne 0) { throw 'Paired candidate gates failed' }
           python -B publisher/automation/preflight_candidate.py $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Windows preflight failed' }
       - name: Send exact verified request under existing explicit approval

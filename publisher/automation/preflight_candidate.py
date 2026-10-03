@@ -13,6 +13,9 @@ def write(path,value):path.parent.mkdir(parents=True,exist_ok=True);path.write_t
 def main():
     started=time.monotonic()
     spec=load_spec(sys.argv[1]);version=spec['version'];sequence=spec['sequence']
+    if len(spec['assets'])==2:
+        from paired_candidate import preflight_pair
+        return preflight_pair(spec)
     require(os.name=='nt' and not WORK.exists(),'Fresh Windows preflight required');WORK.mkdir()
     previous=(ROOT/'updates/stable-longterm.signed.json').read_bytes();_,old,_=signature(previous)
     check_predecessor(spec,old)
