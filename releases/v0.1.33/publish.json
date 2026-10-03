@@ -1,0 +1,37 @@
+{
+  "schema": 1,
+  "version": "0.1.33",
+  "sequence": 15,
+  "requiredActiveVersion": "0.1.32",
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.33/TRADE_OPERATIONS_SUITE_Master_v0.1.33.ecuss-update.zip",
+      "releaseId": "desktop-0.1.33-master-r20261003.1",
+      "bytes": 13199528,
+      "sha256": "2bdeb8669d61f4f03cf7503dacc6479e4a665db14c988b70c49dfc929a99f406",
+      "payloadFiles": 78
+    }
+  ],
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37095373051"
+  ],
+  "notes": [
+    "월간리포트 취합을 업무 도구에서 업무 카테고리로 이동했습니다. 왼쪽 메뉴와 메인 화면을 함께 반영했습니다.",
+    "업무 카테고리 6개·업무 도구 2개이며, Glass UI와 기존 월간리포트 v1.0.5 기능·원천 영역 검증·두 Excel 다운로드를 유지합니다.",
+    "PSR, 재고 취합, 번역 및 나머지 승인 업무 기준은 유지합니다. 프로그램 내 업데이트로 적용합니다.",
+    "이번 서명 요청은 Master v0.1.33입니다. User Beta는 별도 준비·검증 후 승인하여 배포합니다."
+  ],
+  "updateMode": "online",
+  "removedModules": [],
+  "approval": {
+    "explicit": true,
+    "scope": "master-release",
+    "approvedAt": "2026-10-03T13:12:13+09:00",
+    "version": "0.1.33",
+    "sequence": 15,
+    "packageSha256": "2bdeb8669d61f4f03cf7503dacc6479e4a665db14c988b70c49dfc929a99f406"
+  }
+}
