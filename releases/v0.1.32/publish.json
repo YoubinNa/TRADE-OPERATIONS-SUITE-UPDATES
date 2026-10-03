@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "version": "0.1.32",
+  "sequence": 14,
+  "requiredActiveVersion": "0.1.30",
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.32/TRADE_OPERATIONS_SUITE_Master_v0.1.32.ecuss-update.zip",
+      "releaseId": "desktop-0.1.32-master-r20261003.1",
+      "bytes": 13199614,
+      "sha256": "26695583972cdbc0ea1041c4702bbfe5b90ae4a77bf36c64db8a32daf0de9139"
+    }
+  ],
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37092896274"
+  ],
+  "notes": [
+    "월간리포트 취합 확정 v1.0.5를 업무 도구에 추가했습니다. 원천 복사 영역 검증과 월간리포트·확인내역 Excel 다운로드를 유지합니다.",
+    "FTA/PSR 최신 완료 기능을 반영했습니다. 인계된 미완료·검토 보류 조건은 유지하며 최종 원산지 판정을 임의로 확정하지 않습니다.",
+    "Ctrl+마우스 휠 확대·축소, 왼쪽 업무 도구의 사용 가능 표시 제거, 아모그린비나 수책재고 취합 V1.0.5를 포함합니다.",
+    "Glass UI, 기존 번역 수정과 다른 승인 업무 기준을 유지합니다.",
+    "v0.1.30에서 중간 버전 없이 한 번의 프로그램 내 업데이트로 적용합니다. 기존 v0.1.27 등은 안내된 업데이트 파일 가져오기 경로를 사용합니다.",
+    "이번 승인은 Master 배포입니다. User Beta 공개 배포는 별도 진행합니다."
+  ],
+  "updateMode": "online",
+  "removedModules": [],
+  "approval": {
+    "explicit": true,
+    "scope": "master-release",
+    "approvedAt": "2026-10-03T12:35:22+09:00",
+    "version": "0.1.32",
+    "sequence": 14,
+    "packageSha256": "26695583972cdbc0ea1041c4702bbfe5b90ae4a77bf36c64db8a32daf0de9139"
+  }
+}
