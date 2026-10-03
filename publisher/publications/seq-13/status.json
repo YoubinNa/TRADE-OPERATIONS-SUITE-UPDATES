@@ -1,10 +1,22 @@
 {
   "schema": 1,
-  "state": "feed-published",
+  "state": "completed",
   "version": "0.1.30",
   "sequence": 13,
   "windowsChecks": 36,
+  "productionSignatureVerified": true,
+  "anonymousPackageDownloads": 2,
+  "publicFeedVerified": true,
+  "applyRollbackAndDataPreservation": true,
   "updateMode": "legacy-import-once",
-  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/37084915614",
-  "userPcVerified": false
+  "legacyImportRequired": true,
+  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/37085484637",
+  "userPcVerified": false,
+  "publicFeedChecks": {
+    "immutableCommit": true,
+    "movingChannel": true,
+    "anonymous": true,
+    "attempts": 1,
+    "elapsedSeconds": 0.594
+  }
 }
