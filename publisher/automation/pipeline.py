@@ -1,5 +1,6 @@
 """Receive -> validate immutable signed candidate -> Windows probe -> CAS publication."""
 import json, os, re, shutil, subprocess, sys, time, urllib.request
+from public_feed import verify_public_feed
 from pathlib import Path
 from verify import REPO, archive, ready, require, sha, signature, strict_json, update_mode, registry_matches
 ROOT=Path(__file__).resolve().parents[2]
@@ -110,22 +111,15 @@ def publish():
 def finish():
     state=strict_json((WORK/'state.json').read_bytes());r=guard(state)
     require((ROOT/FEED).read_bytes()==r['envelope'],'Active feed mismatch')
-    # Both the public API and raw URL are read anonymously. CDN propagation gets a bounded retry.
-    url=f'https://raw.githubusercontent.com/{REPO}/main/{FEED}'
-    matched=False
-    for attempt in range(12):
-        with urllib.request.urlopen(url,timeout=30) as response:raw=response.read(1048577)
-        if raw==r['envelope']:matched=True;break
-        time.sleep(10)
-    require(matched,'Public feed propagation not yet confirmed; rerun safely resumes')
-    signature(raw)
+    # Verify exact published bytes anonymously; avoid repeatedly reusing a stale CDN cache key.
+    feed_checks=verify_public_feed(REPO, FEED, state['head'], r['envelope'], signature)
     v=state['version'];seq=state['sequence'];base=f'publisher/publications/seq-{seq}'
     github('release','edit',f'v{v}','--prerelease=false','--latest','--title',f'TRADE OPERATIONS SUITE — Master v{v}','--notes-file',f'releases/v{v}/NOTES.md')
     release=strict_json(github('api',f'repos/{REPO}/releases/tags/v{v}'))
     require(not release['prerelease'] and not release['draft'],'Release promotion incomplete')
     # Recheck branch immediately before writing completion; any different request is never cleared.
     guard(state)
-    status=dict(schema=1,state='completed',version=v,sequence=seq,windowsChecks=36,productionSignatureVerified=True,anonymousPackageDownloads=2,publicFeedVerified=True,applyRollbackAndDataPreservation=True,updateMode=state['updateMode'],legacyImportRequired=state['updateMode']=='legacy-import-once',runUrl=os.environ['RUN_URL'],userPcVerified=False)
+    status=dict(schema=1,state='completed',version=v,sequence=seq,windowsChecks=36,productionSignatureVerified=True,anonymousPackageDownloads=2,publicFeedVerified=True,applyRollbackAndDataPreservation=True,updateMode=state['updateMode'],legacyImportRequired=state['updateMode']=='legacy-import-once',runUrl=os.environ['RUN_URL'],userPcVerified=False,publicFeedChecks=feed_checks)
     write(ROOT/base/'status.json',status);write(ROOT/'publisher/status.json',status)
     write(ROOT/'publisher/current-request.json',dict(schema=1,product='TRADE-OPERATIONS-SUITE-PUBLISHER',channel='longterm',state='idle',lastPublishedVersion=v,lastPublishedSequence=seq,statusUrl=f'https://github.com/{REPO}/blob/main/publisher/status.json'))
     commit([base,'publisher/status.json','publisher/current-request.json'],f'publisher: automatic delivery completed for v{v}')

@@ -32,7 +32,11 @@ jobs:
           persist-credentials: false
       - name: Regression tests for publication gates
         shell: pwsh
-        run: python -B publisher/automation/test_verify.py
+        run: |
+          python -B publisher/automation/test_verify.py
+          if ($LASTEXITCODE -ne 0) { throw 'Publication gate tests failed' }
+          python -B publisher/automation/test_public_feed.py
+          if ($LASTEXITCODE -ne 0) { throw 'Public feed tests failed' }
       - name: Match received signature to current approved candidate
         id: candidate
         shell: pwsh
