@@ -1,7 +1,7 @@
 """Regression gates using public seq-10/11 signatures and synthetic mutations."""
 import base64, copy, json, shutil, tempfile, unittest
 from pathlib import Path
-from verify import archive, ready, signature, strict_json
+from verify import archive, ready, signature, strict_json, update_mode, registry_matches
 ROOT=Path(__file__).resolve().parents[2]
 H='7b3d64f24f4f838b4684b5b2ada443e1b43ab3976a2e59150087d268ca748e10'
 INBOX=f'publisher/inbox/seq-11-{H}.signed.json'
@@ -59,4 +59,24 @@ class Gates(unittest.TestCase):
     def test_archive_inventory(self):
         p=ready(self.root)['payload']['catalog']['packages'][0]
         self.assertEqual(archive(ROOT/p['path'],p)['appVersion'],'0.1.26')
+    def test_unknown_update_mode(self):
+        self.change('publisher/plans/seq-11.json',lambda d:d.update(updateMode='ignore-checks'))
+        with self.assertRaises(ValueError):ready(self.root)
+    def test_legacy_mode_needs_explicit_approval(self):
+        with self.assertRaises(ValueError):update_mode({'updateMode':'legacy-import-once'}, {})
+    def test_legacy_mode_needs_signed_registry(self):
+        p={'updateMode':'legacy-import-once','legacyImportExplicitlyApproved':True,'legacyOnlineNewModuleRejected':True}
+        with self.assertRaises(ValueError):update_mode(p,{})
+    def test_legacy_mode_valid_and_exact_registry(self):
+        p={'updateMode':'legacy-import-once','legacyImportExplicitlyApproved':True,'legacyOnlineNewModuleRejected':True}
+        r={'schema':1,'suite':{'repository':'owner/suite','repositoryId':'1','defaultBranch':'main'},'modules':[{'moduleId':'example','repository':'owner/module','repositoryId':'2','defaultBranch':'main'}]}
+        c={'repositoryRegistry':r,'modules':[{'id':'example','repository':'owner/module'}]}
+        self.assertEqual(update_mode(p,c),'legacy-import-once')
+        self.put('module-sources.json',json.dumps(r).encode());registry_matches(self.root,c)
+        self.change('module-sources.json',lambda d:d['modules'][0].update(repositoryId='3'))
+        with self.assertRaises(ValueError):registry_matches(self.root,c)
+    def test_legacy_mode_cannot_mislabel_module_source(self):
+        p={'updateMode':'legacy-import-once','legacyImportExplicitlyApproved':True,'legacyOnlineNewModuleRejected':True}
+        c={'repositoryRegistry':{'schema':1,'suite':{},'modules':[{'moduleId':'a','repository':'owner/a'}]},'modules':[{'id':'a','repository':'owner/b'}]}
+        with self.assertRaises(ValueError):update_mode(p,c)
 if __name__=='__main__':unittest.main()

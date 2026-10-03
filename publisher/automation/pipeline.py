@@ -1,7 +1,7 @@
 """Receive -> validate immutable signed candidate -> Windows probe -> CAS publication."""
 import json, os, re, shutil, subprocess, sys, time, urllib.request
 from pathlib import Path
-from verify import REPO, archive, ready, require, sha, signature, strict_json
+from verify import REPO, archive, ready, require, sha, signature, strict_json, update_mode, registry_matches
 ROOT=Path(__file__).resolve().parents[2]
 WORK=Path(os.environ.get('RUNNER_TEMP', str(ROOT.parent/'auto-publish-temp')))/'suite-auto-publish'
 FEED='updates/stable-longterm.signed.json'
@@ -34,13 +34,14 @@ def prepare():
         require(len(raw)==p['bytes'] and sha(raw)==p['sha256'],'Immutable git package mismatch')
         local=ROOT/p['path'];require(local.read_bytes()==raw,'Working package changed')
         archive(local,p,WORK/label)
+        registry_matches(WORK/label,d['catalog'])
     version=r['payload']['catalog']['appVersion']
     public=strict_json((ROOT/f'releases/v{version}/publish.json').read_bytes())
     p=r['payload']['catalog']['packages'][0]
     require(public['version']==version and len(public['assets'])==1,'Public candidate review record')
     a=public['assets'][0]
     require(all(a[k]==p[k] for k in ['profile','path','releaseId','bytes','sha256']),'Public reviewed bytes mismatch')
-    metadata=dict(head=run('git','rev-parse','HEAD',cwd=ROOT),version=version,sequence=r['payload']['sequence'],requestSha256=sha(r['requestRaw']),envelopeSha256=sha(r['envelope']),resumed=r['resumed'])
+    metadata=dict(head=run('git','rev-parse','HEAD',cwd=ROOT),version=version,sequence=r['payload']['sequence'],requestSha256=sha(r['requestRaw']),envelopeSha256=sha(r['envelope']),resumed=r['resumed'],updateMode=update_mode(r['plan'],r['payload']['catalog']))
     write(WORK/'state.json',metadata)
     output('ready','true');output('version',version)
     print('Production signature, exact request, enabled plan and complete immutable inventories verified.')
@@ -58,13 +59,15 @@ def probe():
     refs=Path(os.environ['ProgramFiles(x86)'])/'Reference Assemblies/Microsoft/Framework/.NETFramework/v4.8'
     names=['mscorlib','System','System.Core','System.Net.Http','System.Web.Extensions','System.IO.Compression','System.Xml','System.Security']
     count=0
+    state=strict_json((WORK/'state.json').read_bytes())
     for label in ['old','next']:
         h=WORK/('probe-'+label);h.mkdir()
         shutil.copyfile(WORK/label/'Ecuss.Desktop.exe',h/'Ecuss.Desktop.exe')
         exe=h/'PackageProbe.exe'
         shutil.copyfile(WORK/label/'Ecuss.Desktop.exe.config',Path(str(exe)+'.config'))
         cmd=[dotnet,sorted(candidates)[-1][1],'-nologo','-target:exe','-platform:x64','-langversion:7.3','-nostdlib+','-warn:4','-warnaserror+']+['-reference:'+str(refs/(n+'.dll')) for n in names]
-        print(run(*cmd,'-out:'+str(exe),'-reference:'+str(h/'Ecuss.Desktop.exe'),ROOT/'publisher/automation/PackageProbe.cs'))
+        source='LegacyImportProbe.cs' if label=='old' and state['updateMode']=='legacy-import-once' else 'PackageProbe.cs'
+        print(run(*cmd,'-out:'+str(exe),'-reference:'+str(h/'Ecuss.Desktop.exe'),ROOT/'publisher/automation'/source))
         result=run(exe,WORK/'old',WORK/'next',WORK/'candidate.json',WORK/'previous.json')
         print(label+': '+result)
         require('CHECKS=18' in result,'Incomplete production probe');count+=18
@@ -99,7 +102,7 @@ def publish():
         (ROOT/base).mkdir(parents=True,exist_ok=True)
         (ROOT/base/'previous.signed.json').write_bytes(r['previous'])
         (ROOT/FEED).write_bytes(r['envelope'])
-        write(ROOT/base/'status.json',dict(schema=1,state='feed-published',version=v,sequence=seq,windowsChecks=36,runUrl=os.environ['RUN_URL'],userPcVerified=False))
+        write(ROOT/base/'status.json',dict(schema=1,state='feed-published',version=v,sequence=seq,windowsChecks=36,updateMode=state['updateMode'],runUrl=os.environ['RUN_URL'],userPcVerified=False))
         commit([FEED,base],f'publish: verified Master v{v} sequence {seq}')
         state['head']=run('git','rev-parse','HEAD',cwd=ROOT);write(WORK/'state.json',state)
     print('Verified feed published. Public retrieval and release promotion follow.')
@@ -122,7 +125,7 @@ def finish():
     require(not release['prerelease'] and not release['draft'],'Release promotion incomplete')
     # Recheck branch immediately before writing completion; any different request is never cleared.
     guard(state)
-    status=dict(schema=1,state='completed',version=v,sequence=seq,windowsChecks=36,productionSignatureVerified=True,anonymousPackageDownloads=2,publicFeedVerified=True,applyRollbackAndDataPreservation=True,runUrl=os.environ['RUN_URL'],userPcVerified=False)
+    status=dict(schema=1,state='completed',version=v,sequence=seq,windowsChecks=36,productionSignatureVerified=True,anonymousPackageDownloads=2,publicFeedVerified=True,applyRollbackAndDataPreservation=True,updateMode=state['updateMode'],legacyImportRequired=state['updateMode']=='legacy-import-once',runUrl=os.environ['RUN_URL'],userPcVerified=False)
     write(ROOT/base/'status.json',status);write(ROOT/'publisher/status.json',status)
     write(ROOT/'publisher/current-request.json',dict(schema=1,product='TRADE-OPERATIONS-SUITE-PUBLISHER',channel='longterm',state='idle',lastPublishedVersion=v,lastPublishedSequence=seq,statusUrl=f'https://github.com/{REPO}/blob/main/publisher/status.json'))
     commit([base,'publisher/status.json','publisher/current-request.json'],f'publisher: automatic delivery completed for v{v}')

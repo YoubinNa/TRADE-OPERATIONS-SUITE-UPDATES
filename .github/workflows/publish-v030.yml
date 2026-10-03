@@ -1,0 +1,87 @@
+name: Prepare approved immutable Master v0.1.30 signing candidate
+on:
+  push:
+    branches: [main]
+    paths: [.github/workflows/publish-v030.yml]
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: candidate-v030
+  cancel-in-progress: false
+jobs:
+  candidate:
+    runs-on: ubuntu-latest
+    outputs:
+      package_commit: ${{ steps.package.outputs.commit }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+      - name: Verify exact approved bytes and assemble immutable public package
+        id: package
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          python3 - <<'PY'
+          import pathlib,json,sys
+          sys.path.insert(0,'publisher/automation')
+          from verify import archive
+          p=json.loads(pathlib.Path('releases/v0.1.30/publish.json').read_bytes())['assets'][0]
+          path=pathlib.Path(p['path'])
+          if not path.exists():
+              parts=sorted(pathlib.Path('releases/v0.1.30/transfer').glob('master-*.part'))
+              assert len(parts)==67
+              raw=b''.join(x.read_bytes() for x in parts)
+              path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(raw)
+          archive(path,dict(p,appVersion='0.1.30'))
+          PY
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- packages/v0.1.30
+          if [ -d releases/v0.1.30/transfer ]; then git rm -r releases/v0.1.30/transfer; fi
+          if ! git diff --cached --quiet; then
+            git commit -m 'release: preserve audited immutable v30 Master package'
+            git push origin HEAD:refs/heads/main
+          fi
+          candidate_commit=$(git rev-parse HEAD)
+          echo "commit=$candidate_commit" >> "$GITHUB_OUTPUT"
+          if gh release view v0.1.30 >/dev/null 2>&1; then
+            gh release view v0.1.30 --json assets > /tmp/v030-assets.json
+            python3 - <<'PY'
+          import json,pathlib
+          a=json.loads(pathlib.Path('/tmp/v030-assets.json').read_bytes())['assets']
+          assert len(a)==1 and a[0]['name']=='TRADE_OPERATIONS_SUITE_Master_v0.1.30.ecuss-update.zip' and a[0]['size']==13064321
+          PY
+          else
+            gh release create v0.1.30 packages/v0.1.30/TRADE_OPERATIONS_SUITE_Master_v0.1.30.ecuss-update.zip --target "$candidate_commit" --title 'Master v0.1.30 — signing candidate' --notes-file releases/v0.1.30/NOTES.md --prerelease --latest=false
+          fi
+  windows:
+    needs: candidate
+    runs-on: windows-2022
+    timeout-minutes: 15
+    env:
+      PYTHONUTF8: '1'
+      PYTHONIOENCODING: utf-8
+      RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
+    steps:
+      - shell: pwsh
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          ref: ${{ needs.candidate.outputs.package_commit }}
+      - name: Check publication gates and actual Windows anonymous download
+        shell: pwsh
+        run: |
+          python -B publisher/automation/test_verify.py
+          if ($LASTEXITCODE -ne 0) { throw 'Publication gates failed' }
+          python -B publisher/automation/preflight_v030.py
+          if ($LASTEXITCODE -ne 0) { throw 'Public preflight failed' }
+      - name: Archive checked request without sending it yet
+        shell: pwsh
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -- publisher/requests/v0.1.30.json releases/v0.1.30/PREFLIGHT.json
+          git commit -m 'publisher: archive verified v30 request; current request remains idle'
+          if ($LASTEXITCODE -ne 0) { throw 'Archive commit failed' }
+          git push origin HEAD:refs/heads/main
+          if ($LASTEXITCODE -ne 0) { throw 'Concurrent change; refusing overwrite' }

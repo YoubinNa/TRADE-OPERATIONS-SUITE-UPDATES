@@ -72,6 +72,7 @@ def ready(root):
     plan = strict_json((root/f'publisher/plans/seq-{seq}.json').read_bytes())
     require(plan['schema'] == 1 and plan['enabled'] is True and plan['payloadSha256'] == h, 'Not enabled for automatic publication')
     require(plan['publicContentReviewed'] is True and plan['windowsCandidateVerified'] is True, 'Candidate review incomplete')
+    update_mode(plan, d['catalog'])
     active_raw = (root/'updates/stable-longterm.signed.json').read_bytes()
     _, active, _ = signature(active_raw)
     resumed = active_raw == raw
@@ -84,6 +85,24 @@ def ready(root):
     require(previous['catalog']['appVersion'] == plan['requiredActiveVersion'], 'Required transition not active')
     require(tuple(map(int,d['catalog']['appVersion'].split('.'))) > tuple(map(int,previous['catalog']['appVersion'].split('.'))), 'Version must advance')
     return dict(requestRaw=request_raw, envelope=raw, previous=previous_raw, payload=d, previousPayload=previous, plan=plan, resumed=resumed, inbox=inbox.relative_to(root).as_posix())
+
+def update_mode(plan, catalog):
+    mode=plan.get('updateMode','online')
+    require(mode in ('online','legacy-import-once'),'Unsupported update mode')
+    if mode=='legacy-import-once':
+        require(plan.get('legacyImportExplicitlyApproved') is True and plan.get('legacyOnlineNewModuleRejected') is True,'Legacy import requires explicit reviewed approval')
+        r=catalog.get('repositoryRegistry')
+        require(isinstance(r,dict) and r.get('schema')==1 and isinstance(r.get('suite'),dict) and isinstance(r.get('modules'),list),'Signed cumulative registry required')
+        require(0<len(r['modules'])<=30 and len({m['moduleId'] for m in r['modules']})==len(r['modules']),'Invalid cumulative registry modules')
+        require(all(any(s['moduleId']==m['id'] and s['repository']==m['repository'] for s in r['modules']) for m in catalog['modules']),'Cumulative module/source mismatch')
+    return mode
+
+def registry_matches(root, catalog):
+    if 'repositoryRegistry' not in catalog:return
+    actual=strict_json((root/'module-sources.json').read_bytes());approved=catalog['repositoryRegistry']
+    def source(r):return tuple(r.get(k) for k in ('moduleId','repository','repositoryId','defaultBranch'))
+    require(actual['schema']==approved['schema'] and source(actual['suite'])==source(approved['suite']),'Packaged suite registry mismatch')
+    require(len(actual['modules'])==len(approved['modules']) and sorted(map(source,actual['modules']))==sorted(map(source,approved['modules'])),'Packaged module registry mismatch')
 
 def archive(path, p, target=None):
     raw = path.read_bytes()

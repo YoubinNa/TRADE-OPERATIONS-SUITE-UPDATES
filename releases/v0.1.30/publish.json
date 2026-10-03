@@ -1,0 +1,18 @@
+{
+  "schema": 1,
+  "version": "0.1.30",
+  "state": "public-candidate-awaiting-master-signature",
+  "masterApprovedAt": "2026-10-03T09:38:38+09:00",
+  "updateMode": "legacy-import-once",
+  "publicContentReviewed": true,
+  "windowsCandidateChecks": 315,
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.30/TRADE_OPERATIONS_SUITE_Master_v0.1.30.ecuss-update.zip",
+      "releaseId": "desktop-0.1.30-master-r20261003.1",
+      "bytes": 13064321,
+      "sha256": "e9fd4ef13b444dc8333150511df750f9682d08a4e80350a2ad0746238c3d55ff"
+    }
+  ]
+}
