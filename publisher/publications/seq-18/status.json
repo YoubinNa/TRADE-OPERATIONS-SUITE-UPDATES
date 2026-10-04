@@ -1,6 +1,6 @@
 {
   "schema": 2,
-  "state": "feed-published",
+  "state": "completed",
   "version": "0.1.36",
   "sequence": 18,
   "profiles": [
@@ -8,11 +8,30 @@
     "user"
   ],
   "releaseStage": "beta",
+  "oneSignedPayload": true,
+  "pairedModulesIdentical": true,
+  "windowsChecks": 72,
   "windowsChecksByProfile": {
     "master": 36,
     "user": 36
   },
-  "windowsChecks": 72,
+  "productionSignatureVerified": true,
+  "anonymousPackageDownloads": 4,
+  "publicFeedVerified": true,
+  "publicFeedChecks": {
+    "immutableCommit": true,
+    "movingChannel": true,
+    "anonymous": true,
+    "attempts": 1,
+    "elapsedSeconds": 0.532
+  },
+  "applyRollbackProfiles": [
+    "master",
+    "user"
+  ],
+  "firstPublicInstallProfiles": [],
+  "settingsAndResultsPreserved": true,
+  "updateMode": "online",
   "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/37163958743",
   "userPcVerified": false
 }
