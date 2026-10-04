@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "version": "0.1.36",
+  "sequence": 18,
+  "requiredActiveVersion": "0.1.35",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37161702259",
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37162248361"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.36/TRADE_OPERATIONS_SUITE_Master_v0.1.36.ecuss-update.zip",
+      "releaseId": "desktop-0.1.36-master-r20261004.1",
+      "bytes": 13498416,
+      "sha256": "55b4cf76654bd25b5583e0c0b0a1b58c68680c198ad7047583e7c12fa45df2cd"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.36/TRADE_OPERATIONS_SUITE_User_v0.1.36.ecuss-update.zip",
+      "releaseId": "desktop-0.1.36-user-r20261004.1",
+      "bytes": 13477653,
+      "sha256": "dcb3ca7019f4f2356101ae1cd944744375ec31bf43b2f4eafb81440f52c1b83a"
+    }
+  ],
+  "installers": [
+    {
+      "profile": "master",
+      "name": "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.36.exe",
+      "bytes": 226088448,
+      "sha256": "a0184acaa6c133d45130e0222ce2d51460bb1f5096fc048a69d0d4e7323dec2f"
+    },
+    {
+      "profile": "user",
+      "name": "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.36.exe",
+      "bytes": 226067968,
+      "sha256": "735fb6e2be00632f574b6e014911f66bbad9330faa816ce1bbb465646caaf172"
+    }
+  ],
+  "notes": [
+    "Master/User v0.1.36 Beta를 같은 앱·8개 모듈·업무 기준의 한 배포 단위로 제공합니다.",
+    "User 아모비나 상단의 중복 작업 안내를 제거했습니다. Master 안내와 하단 펼침·접기 도움말은 유지합니다.",
+    "Master/User 월간리포트 사이드바의 TRADE OPERATIONS / Glass Workspace와 Global Trade Operations Team 제목을 제거했습니다.",
+    "전체 8개 모듈과 PSR KR/VN 내부 화면의 카드·버튼·입력창·글꼴·색상을 공통 Glass Workspace로 정리했습니다.",
+    "기존 계산 기준·미완료 보류·파일 처리·메일 권한 차이와 입력/처리 중 작업 보호는 유지합니다.",
+    "Master/User 기존 설치본은 프로그램 안에서 같은 버전으로 업데이트합니다. 최초 설치용 단일 Setup도 양쪽 함께 제공합니다.",
+    "두 ZIP과 두 Setup을 한 서명 요청으로 연결하며 전달 후 양쪽 검증을 통과해야 같은 업데이트 목록을 활성화합니다.",
+    "Windows 자동 검증과 사용자 PC 적용·Microsoft Excel 자체 표시/재계산 확인은 구분합니다."
+  ],
+  "removedModules": [],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-04T08:58:54+09:00",
+    "version": "0.1.36",
+    "sequence": 18,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.36.ecuss-update.zip": "55b4cf76654bd25b5583e0c0b0a1b58c68680c198ad7047583e7c12fa45df2cd",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.36.ecuss-update.zip": "dcb3ca7019f4f2356101ae1cd944744375ec31bf43b2f4eafb81440f52c1b83a",
+      "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.36.exe": "a0184acaa6c133d45130e0222ce2d51460bb1f5096fc048a69d0d4e7323dec2f",
+      "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.36.exe": "735fb6e2be00632f574b6e014911f66bbad9330faa816ce1bbb465646caaf172"
+    }
+  }
+}
