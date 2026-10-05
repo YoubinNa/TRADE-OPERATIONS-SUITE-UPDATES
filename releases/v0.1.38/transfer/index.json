@@ -1,0 +1,543 @@
+{
+  "schema": 2,
+  "version": "0.1.38",
+  "encoding": "base64-text",
+  "assets": [
+    {
+      "kind": "package",
+      "profile": "master",
+      "name": "TRADE_OPERATIONS_SUITE_Master_v0.1.38.ecuss-update.zip",
+      "bytes": 13656540,
+      "sha256": "f80be19db1ad4764335f3db7c785ae4ca7e26081df43d4a43a3f81e1e1d21a4c",
+      "transferBytes": 13656540,
+      "transferSha256": "f80be19db1ad4764335f3db7c785ae4ca7e26081df43d4a43a3f81e1e1d21a4c",
+      "parts": [
+        {
+          "name": "master-package-000.b64",
+          "bytes": 589824,
+          "sha256": "a831027e93f14ee981260f997a124682cb8c139be29407cdf25697e1d4bcfd6d"
+        },
+        {
+          "name": "master-package-001.b64",
+          "bytes": 589824,
+          "sha256": "6f0e29824df4d2d94d93917aba459386b79b47643c78b57d3e2c72904b583125"
+        },
+        {
+          "name": "master-package-002.b64",
+          "bytes": 589824,
+          "sha256": "afced11fa7389bbbab13fef7110bc0dbe4fb4e6e3de8a3ebe8e85e04babd2ae0"
+        },
+        {
+          "name": "master-package-003.b64",
+          "bytes": 589824,
+          "sha256": "31ecf2a38e6fcb64ebd38f51cb8da1f4a0e495199391a293c008122508dacacf"
+        },
+        {
+          "name": "master-package-004.b64",
+          "bytes": 589824,
+          "sha256": "375e9170963985eea1f7d92bb714512acdfdbfc7d362cd9413e48f7287ff1961"
+        },
+        {
+          "name": "master-package-005.b64",
+          "bytes": 589824,
+          "sha256": "053fad540f63a50e98a10342ae1c36bfcdcf7089aa5711a64c64b28f624c15df"
+        },
+        {
+          "name": "master-package-006.b64",
+          "bytes": 589824,
+          "sha256": "280ef54ea7eca21414ea23dd68b3f432e5e79994f22e0d6c17014234439c5e40"
+        },
+        {
+          "name": "master-package-007.b64",
+          "bytes": 589824,
+          "sha256": "64dd3c93510fa2de734aa5a67314059ccf556b9c56944a45ff6f4950221766d6"
+        },
+        {
+          "name": "master-package-008.b64",
+          "bytes": 589824,
+          "sha256": "a1cc4d790b989280cf35b772c8284c298e1a3ce93a8a7686a4ebd88147a9a0d2"
+        },
+        {
+          "name": "master-package-009.b64",
+          "bytes": 589824,
+          "sha256": "992783cb95c3a3eddc66217f357fd925ebc57b6cc878448b74e6947678c7c2a6"
+        },
+        {
+          "name": "master-package-010.b64",
+          "bytes": 589824,
+          "sha256": "cc77d30c0e7ef163578dd4f723aa0e3f20df7664417f3bcd4df5d624f7e251cd"
+        },
+        {
+          "name": "master-package-011.b64",
+          "bytes": 589824,
+          "sha256": "ec9568245d6bae55ab6b52c99725c09fb5328373f8ab3f58d78675c9c831f504"
+        },
+        {
+          "name": "master-package-012.b64",
+          "bytes": 589824,
+          "sha256": "665846f93cd3a943d2fb0983e4c00f2180618fc6f8d48002bebb47b92f0f06a2"
+        },
+        {
+          "name": "master-package-013.b64",
+          "bytes": 589824,
+          "sha256": "e23d5191d4ff941bcb70687faa3118de7220544bd4faadc6a9b564e611bd9364"
+        },
+        {
+          "name": "master-package-014.b64",
+          "bytes": 589824,
+          "sha256": "c18204c423f0e883d124a9965f3bf456467f0617be3a69f378c21aab0d16f193"
+        },
+        {
+          "name": "master-package-015.b64",
+          "bytes": 589824,
+          "sha256": "fe556fd0a8f29c31378046ac7e90236ce48865151bd6cb6f4fe7b419c9c8a562"
+        },
+        {
+          "name": "master-package-016.b64",
+          "bytes": 589824,
+          "sha256": "709675690a807e202807db9ba1d1b7b6211625a7204c234ec7300b2db554a9eb"
+        },
+        {
+          "name": "master-package-017.b64",
+          "bytes": 589824,
+          "sha256": "17d7967ac6476e840b2e02f0538920794092e852d7c1676fdb26b74a89777844"
+        },
+        {
+          "name": "master-package-018.b64",
+          "bytes": 589824,
+          "sha256": "e522443823e7d6490366f1b840c288443a8bc640a0923eadbf04c3e06ceeeca8"
+        },
+        {
+          "name": "master-package-019.b64",
+          "bytes": 589824,
+          "sha256": "6b1a688a63ea61cfdae7b591bcf6374c53b66539e88f36d82e4c324fbd5e9459"
+        },
+        {
+          "name": "master-package-020.b64",
+          "bytes": 589824,
+          "sha256": "7465a5e081a46b493f2d76d6d5a809888c675a5d5231c002ba72650ded183162"
+        },
+        {
+          "name": "master-package-021.b64",
+          "bytes": 589824,
+          "sha256": "7b992658dc5ff9148b565ca21615c73b1e887123a8c52e126c3d3a3fc848b157"
+        },
+        {
+          "name": "master-package-022.b64",
+          "bytes": 589824,
+          "sha256": "9b0483a245ea623ebe1ed31774c34acd9e20edc94a06f916a09ba2b290e8766a"
+        },
+        {
+          "name": "master-package-023.b64",
+          "bytes": 90588,
+          "sha256": "84f3448a3d2d4598e866a962ffb7b7ed5f0fcd9ee1173d5da800b5e797b0b852"
+        }
+      ]
+    },
+    {
+      "kind": "package",
+      "profile": "user",
+      "name": "TRADE_OPERATIONS_SUITE_User_v0.1.38.ecuss-update.zip",
+      "bytes": 13636002,
+      "sha256": "6076561262f4e742e8aa80ac5995b573b1366f3599c585df0bb8c5c55e5ecd1a",
+      "transferBytes": 13636002,
+      "transferSha256": "6076561262f4e742e8aa80ac5995b573b1366f3599c585df0bb8c5c55e5ecd1a",
+      "parts": [
+        {
+          "name": "user-package-000.b64",
+          "bytes": 589824,
+          "sha256": "d63ce7b32a351ba96cdc8686da6003e0dd3f010908feb50a2f3b7d9168857a5f"
+        },
+        {
+          "name": "user-package-001.b64",
+          "bytes": 589824,
+          "sha256": "874063e5204c2fcd0bde43da04c9b85c278c5c1cf22e86f6017aad5b2de32486"
+        },
+        {
+          "name": "user-package-002.b64",
+          "bytes": 589824,
+          "sha256": "4f730c774c434ca6194a896052d9035fef683d3adde745f8218bfdb7f320fa51"
+        },
+        {
+          "name": "user-package-003.b64",
+          "bytes": 589824,
+          "sha256": "a69afe36238e1bc07ff49ef007782b9f263a9785a2ad5872b12c232bee8b35d6"
+        },
+        {
+          "name": "user-package-004.b64",
+          "bytes": 589824,
+          "sha256": "22582c52cb122d00fce81dfe96e47f0e3b883c59a754e0439b7ed374b7d6e16d"
+        },
+        {
+          "name": "user-package-005.b64",
+          "bytes": 589824,
+          "sha256": "c69c30c648a4849bfd7c7620af0ac815434a4b10ccf2f57a525feecaf90bfbf3"
+        },
+        {
+          "name": "user-package-006.b64",
+          "bytes": 589824,
+          "sha256": "dfcca2ab616a392e15c6e47b6bc3bc6de2548e2c4c89b2e4cc649f69245d8877"
+        },
+        {
+          "name": "user-package-007.b64",
+          "bytes": 589824,
+          "sha256": "4763c89a1292bd365b2c24c1aa36c64fed97cc77f6e168040045ff09edca1ac6"
+        },
+        {
+          "name": "user-package-008.b64",
+          "bytes": 589824,
+          "sha256": "eab0578fd43df3854e2ed0c83f495b7fd967f4cff72f82b6d3c59683a26f281b"
+        },
+        {
+          "name": "user-package-009.b64",
+          "bytes": 589824,
+          "sha256": "3fbe4f491134d2f411f22d5d017e85b39a75a18b6757818a418f57b55765d387"
+        },
+        {
+          "name": "user-package-010.b64",
+          "bytes": 589824,
+          "sha256": "7a27941a1c49a2421b52aaefe0579b598a488fff8f7bc7b9104ea956dda984c0"
+        },
+        {
+          "name": "user-package-011.b64",
+          "bytes": 589824,
+          "sha256": "f6ba5fa34f802e9003795e7fa9002abdda733bfacb78c850a2099c8df94b1110"
+        },
+        {
+          "name": "user-package-012.b64",
+          "bytes": 589824,
+          "sha256": "86ef0b5489de33732cb1f4472b833d15e7d8ea71ed77071defd4ab97c7ab869c"
+        },
+        {
+          "name": "user-package-013.b64",
+          "bytes": 589824,
+          "sha256": "c928e6ce7360a63ccbb60971b70d51b870dde5f9a1332835c64b8507ce131380"
+        },
+        {
+          "name": "user-package-014.b64",
+          "bytes": 589824,
+          "sha256": "4dac8bea7c38775a49af76cdb90d72eebdae3bc65962fd88bbfc747118cc1774"
+        },
+        {
+          "name": "user-package-015.b64",
+          "bytes": 589824,
+          "sha256": "b8ea5dbe443da13fba00416977bc711deaa485363965972bbae4b252a6031a15"
+        },
+        {
+          "name": "user-package-016.b64",
+          "bytes": 589824,
+          "sha256": "d34dd19124cea542f044a9b6d44b9c9c9b61f427491a0ee30a35c11671672521"
+        },
+        {
+          "name": "user-package-017.b64",
+          "bytes": 589824,
+          "sha256": "ca4b2a32215b05dec263d9ccca92773eb8c38fbf79185af7d18d858a05324013"
+        },
+        {
+          "name": "user-package-018.b64",
+          "bytes": 589824,
+          "sha256": "3a9184f9aa0ed77949faba08b6ad4bfc4349e29e4128e797bc6bb21643f2fdb1"
+        },
+        {
+          "name": "user-package-019.b64",
+          "bytes": 589824,
+          "sha256": "4a88cafad8d99ff56e6150a33e806f8e7e4154875e1d55f5d578cedf2dbfbde5"
+        },
+        {
+          "name": "user-package-020.b64",
+          "bytes": 589824,
+          "sha256": "726a782d45db4c5dc04a70898fcaa46efb0f8ec21d361c122be580ce746e2631"
+        },
+        {
+          "name": "user-package-021.b64",
+          "bytes": 589824,
+          "sha256": "2800c19d7eabdddcc6c137ed03d2619f55ffe1bb20a54c719171f76eef20179f"
+        },
+        {
+          "name": "user-package-022.b64",
+          "bytes": 589824,
+          "sha256": "bc9f3a3633b9ccf6757e04d0006f092f8cc84bf789bc3bca8b1645c4f27d2bf6"
+        },
+        {
+          "name": "user-package-023.b64",
+          "bytes": 70050,
+          "sha256": "2f0e212dc57de1b4f1a4017e469b46aacd6e0862926ed25dc645579e88f6d578"
+        }
+      ]
+    },
+    {
+      "kind": "setup",
+      "profile": "master",
+      "name": "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.38.exe",
+      "bytes": 226246656,
+      "sha256": "5e5518248a77bff14594ff2fd6135b4f5a1f4829107141f7bbb3091d5a331a07",
+      "runtime": {
+        "url": "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/06fb6ad8-1976-4e78-9ceb-3ae170edebde/MicrosoftEdgeWebView2RuntimeInstallerX64.exe",
+        "sha256": "771042db15cb5c463bac51a8408e70183d7130e8ac946709384c2223da582c1b",
+        "bytes": 212213456,
+        "offset": 14004272
+      },
+      "transferBytes": 14033200,
+      "transferSha256": "2eb4c5c512d9cca7290717b3614685ccd7a91cbbd60450d3238f26e77a789353",
+      "parts": [
+        {
+          "name": "master-setup-000.b64",
+          "bytes": 589824,
+          "sha256": "5c98ee2924281e132286ba82f4ed0e0dfb5d188479fe08ab1356344051a296f1"
+        },
+        {
+          "name": "master-setup-001.b64",
+          "bytes": 589824,
+          "sha256": "51d1ed3e55dff0b6ffec01ca6c8dddf4865e29bec0213f28b1a759004aa6150e"
+        },
+        {
+          "name": "master-setup-002.b64",
+          "bytes": 589824,
+          "sha256": "6e7436581872eb44d07a4a8ceb597500ae0454f3672112dfaf44820dd51bb404"
+        },
+        {
+          "name": "master-setup-003.b64",
+          "bytes": 589824,
+          "sha256": "47c886e9fb1b8794129b99176f8d6c3b2b26183587539aca41237086f9286704"
+        },
+        {
+          "name": "master-setup-004.b64",
+          "bytes": 589824,
+          "sha256": "e4fd0db715fafceb4d00c0cfd8c43079cf64c139c83af29ca653889b21983b8e"
+        },
+        {
+          "name": "master-setup-005.b64",
+          "bytes": 589824,
+          "sha256": "4e2b016c4f66cd628948b83af95e0a81403a552c75bfd2e1a8b2a7264b135def"
+        },
+        {
+          "name": "master-setup-006.b64",
+          "bytes": 589824,
+          "sha256": "71496afacc69d83065881998d1cc87be121d1d75caf08c854da313749a5fce07"
+        },
+        {
+          "name": "master-setup-007.b64",
+          "bytes": 589824,
+          "sha256": "3120d877dec1088c63168f76a33b890ffe40bb9e4da7ff892abf259892210d0e"
+        },
+        {
+          "name": "master-setup-008.b64",
+          "bytes": 589824,
+          "sha256": "941cb9876daaa8b89d91ec79be602553e7ff84f96efe17612588e8000521c12f"
+        },
+        {
+          "name": "master-setup-009.b64",
+          "bytes": 589824,
+          "sha256": "8ed9039d1c103482a3a9d1832f908dcc3d822b82d2b3010e8485c02fe5d1d71b"
+        },
+        {
+          "name": "master-setup-010.b64",
+          "bytes": 589824,
+          "sha256": "334fc0e6cb4f5d9df69a6b02ead2657869a18ab28764e4ec54b606f3f5da0d28"
+        },
+        {
+          "name": "master-setup-011.b64",
+          "bytes": 589824,
+          "sha256": "87c83f68ed38b2b86ea38f12a54d2f68e766baf1e67daa68b3dc55fc183c71ae"
+        },
+        {
+          "name": "master-setup-012.b64",
+          "bytes": 589824,
+          "sha256": "681c03cd347d232a26fccf880389be50e43d784104fb32bd459155c657631110"
+        },
+        {
+          "name": "master-setup-013.b64",
+          "bytes": 589824,
+          "sha256": "e7851a5a36739f77d10603eb71fa216286add866b1a90b3d38d28b6824f30fef"
+        },
+        {
+          "name": "master-setup-014.b64",
+          "bytes": 589824,
+          "sha256": "0b724b448dcd1b0d67a0897a17ba2e51b15b6f4ad5309453fb68f506c1d2962c"
+        },
+        {
+          "name": "master-setup-015.b64",
+          "bytes": 589824,
+          "sha256": "7e6d096c909fae129dcdd2cd3c4fcd1929b90c0da3f42e620c81f5c9d3f1f3aa"
+        },
+        {
+          "name": "master-setup-016.b64",
+          "bytes": 589824,
+          "sha256": "808da1b1042d37ab4834b13f83e03065a45c76954f9558c9f7e03d4b764d0cee"
+        },
+        {
+          "name": "master-setup-017.b64",
+          "bytes": 589824,
+          "sha256": "c343fa2da4124b6f1b285f3d0120aa09fd90869b3563c9eb78d8b4bf8f542170"
+        },
+        {
+          "name": "master-setup-018.b64",
+          "bytes": 589824,
+          "sha256": "2cb1ed4769a9fa29186c8a5be89cf399297607361c689f577f658543c9359e09"
+        },
+        {
+          "name": "master-setup-019.b64",
+          "bytes": 589824,
+          "sha256": "fff71f8a4cc77eaadffbf977f57852572bddb46ffce894808e4bb22da067247c"
+        },
+        {
+          "name": "master-setup-020.b64",
+          "bytes": 589824,
+          "sha256": "0a6e63ec1bf6694a1c77e21da437ad6affbfe14178bb76361d5180fc3646f94f"
+        },
+        {
+          "name": "master-setup-021.b64",
+          "bytes": 589824,
+          "sha256": "ce3f92969d38f45929e3fd7072ff28db5abc61173e7ae77e66eedff5996bca24"
+        },
+        {
+          "name": "master-setup-022.b64",
+          "bytes": 589824,
+          "sha256": "d592cecaab007e174003f2122dd863d2b03d87a8f6be40a72d854ddccbe17c16"
+        },
+        {
+          "name": "master-setup-023.b64",
+          "bytes": 467248,
+          "sha256": "ca89cf26c5e859dc458a582896636d13dbe24453d8fca8178e6e3fbafd5d3f78"
+        }
+      ]
+    },
+    {
+      "kind": "setup",
+      "profile": "user",
+      "name": "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.38.exe",
+      "bytes": 226226176,
+      "sha256": "90d6a4d985a43c2419d1383ba87641439e2a9324fd266f8540d3b480b794f00e",
+      "runtime": {
+        "url": "https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/06fb6ad8-1976-4e78-9ceb-3ae170edebde/MicrosoftEdgeWebView2RuntimeInstallerX64.exe",
+        "sha256": "771042db15cb5c463bac51a8408e70183d7130e8ac946709384c2223da582c1b",
+        "bytes": 212213456,
+        "offset": 13983760
+      },
+      "transferBytes": 14012720,
+      "transferSha256": "2fe03343edae98106dbbeef7f69767ba992769986e4a3e5c23d3c09ea67640e9",
+      "parts": [
+        {
+          "name": "user-setup-000.b64",
+          "bytes": 589824,
+          "sha256": "eb3ee9974471d4d2744d2f1fe4502284263b691c8020946f0f2af163c650093b"
+        },
+        {
+          "name": "user-setup-001.b64",
+          "bytes": 589824,
+          "sha256": "b36549a2d779cafc57b18e554c677517751465ef75fa7e0e7e6b734cf992d03a"
+        },
+        {
+          "name": "user-setup-002.b64",
+          "bytes": 589824,
+          "sha256": "fda2362fd118fc2811331f32df8a93b177f627195949ab9365cc5331df5c9b83"
+        },
+        {
+          "name": "user-setup-003.b64",
+          "bytes": 589824,
+          "sha256": "c0dba18c361ee5867383bcd1f199ad73a1b2348096d0e730fa9ac4a1c420da06"
+        },
+        {
+          "name": "user-setup-004.b64",
+          "bytes": 589824,
+          "sha256": "451726ab0fc9fc6ae22debecedcc6b231f304649df31b98f5adfa43c10ed8d62"
+        },
+        {
+          "name": "user-setup-005.b64",
+          "bytes": 589824,
+          "sha256": "6233369f88d85992d0b92bcd36b1e95efdf571a9ba7a6d303cef6be99034b2bd"
+        },
+        {
+          "name": "user-setup-006.b64",
+          "bytes": 589824,
+          "sha256": "e0c145bfb1b00cb84eed6b5efff0e1067ae53c68937d5496a08c9acb9598e017"
+        },
+        {
+          "name": "user-setup-007.b64",
+          "bytes": 589824,
+          "sha256": "7d23406fa5b44917195aff18ef70712fd8709681ea4086aab0b42dfc5af4d0b4"
+        },
+        {
+          "name": "user-setup-008.b64",
+          "bytes": 589824,
+          "sha256": "7b6c4962bbb05c02a07cd6c4447d7d47bcd1476469eecf46dc98e4dc15c2da6f"
+        },
+        {
+          "name": "user-setup-009.b64",
+          "bytes": 589824,
+          "sha256": "a83ca0c8fad8ea0268e09736ef934e3d6f0635f08315c534bdab9af7cc71c9bd"
+        },
+        {
+          "name": "user-setup-010.b64",
+          "bytes": 589824,
+          "sha256": "e20a38fd600cc8ca83fdd7daae181f2124d67efad75718537147b4fd0c0da2cb"
+        },
+        {
+          "name": "user-setup-011.b64",
+          "bytes": 589824,
+          "sha256": "0509ba858bf78cfed42d3123297b94878aa1e50ff5334b551a3e715530570038"
+        },
+        {
+          "name": "user-setup-012.b64",
+          "bytes": 589824,
+          "sha256": "10c37aae55db0e4a422deb6fa58af94b8d984a73d13fc35e7e99f52f31969ef8"
+        },
+        {
+          "name": "user-setup-013.b64",
+          "bytes": 589824,
+          "sha256": "a31edd56baa2512ccb241513d364cb85cd4aa2f045aa20bc6d89a664a32f8810"
+        },
+        {
+          "name": "user-setup-014.b64",
+          "bytes": 589824,
+          "sha256": "2ada9dca5c019e8a7d48fbfddbf1598ce93007d01ee7d82b3d446022a4978b7d"
+        },
+        {
+          "name": "user-setup-015.b64",
+          "bytes": 589824,
+          "sha256": "d56c4a80804665079abfc7ee9c4c15cb4522cf61ed8779f2a5ea0a696506f396"
+        },
+        {
+          "name": "user-setup-016.b64",
+          "bytes": 589824,
+          "sha256": "7a10eb5d8946d690d2cd7cd41477578a422e2ad91533603ece9b46c48cb74487"
+        },
+        {
+          "name": "user-setup-017.b64",
+          "bytes": 589824,
+          "sha256": "80748b7c8529a20e9ac0b52025e20ea2152c6daeedbe0b1868d752b7b02a97fc"
+        },
+        {
+          "name": "user-setup-018.b64",
+          "bytes": 589824,
+          "sha256": "1ccfef0a931026dd1bf682a31baf4e71b3a5df0d04a7d01c9388bd17d895d293"
+        },
+        {
+          "name": "user-setup-019.b64",
+          "bytes": 589824,
+          "sha256": "2c8da660a30100a0fb49c974128541d93d5fe9b3904b0a1302d063e2a8089c46"
+        },
+        {
+          "name": "user-setup-020.b64",
+          "bytes": 589824,
+          "sha256": "244f87a044fab0db3f94519d7173b45d5c86530fb07024aff9e0820850ca1012"
+        },
+        {
+          "name": "user-setup-021.b64",
+          "bytes": 589824,
+          "sha256": "639057c534035ac70e734d162f90c17f496efc55a307546a86afb488905fbfb2"
+        },
+        {
+          "name": "user-setup-022.b64",
+          "bytes": 589824,
+          "sha256": "389b12a10a2d3df2a0d7603adf9a94591068e7d4c95a54220111033115af4fa2"
+        },
+        {
+          "name": "user-setup-023.b64",
+          "bytes": 446768,
+          "sha256": "35e9e4c4e70ad961eaad01ac84030bd10a52a358d441a59033ce762691126b68"
+        }
+      ]
+    }
+  ]
+}
