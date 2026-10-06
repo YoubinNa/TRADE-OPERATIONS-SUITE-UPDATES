@@ -1,0 +1,67 @@
+{
+  "schema": 1,
+  "version": "0.1.40",
+  "sequence": 22,
+  "requiredActiveVersion": "0.1.39",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37404764136",
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37405626670"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.40/TRADE_OPERATIONS_SUITE_Master_v0.1.40.ecuss-update.zip",
+      "releaseId": "desktop-0.1.40-master-r20261006.2",
+      "bytes": 13803980,
+      "sha256": "d9029118874e39d55fc9f48f788cef6f5cca0d2b19806206f9aa170159ace3ca"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.40/TRADE_OPERATIONS_SUITE_User_v0.1.40.ecuss-update.zip",
+      "releaseId": "desktop-0.1.40-user-r20261006.2",
+      "bytes": 13783280,
+      "sha256": "9d9163d4efef64e8cc7f6d58d1448ecf81be0249d2bc73995270e351d96f02c0"
+    }
+  ],
+  "installers": [
+    {
+      "profile": "master",
+      "name": "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.40.exe",
+      "bytes": 226394112,
+      "sha256": "1953c4d94839f7b58f27e3694a0367644acb3501959892ed088220b46f3c8250"
+    },
+    {
+      "profile": "user",
+      "name": "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.40.exe",
+      "bytes": 226373632,
+      "sha256": "8bb63964f1d4c5d861440ba90b376de81426d66500850e9617664a1a7b2b1952"
+    }
+  ],
+  "notes": [
+    "Master/User v0.1.40 Beta를 동일 앱·모듈·기준의 한 배포 단위로 제공합니다.",
+    "프로그램 업데이트 확인창을 “메인 서버에서 내려받아 무결성을 확인한 업데이트”로 변경했습니다. 기존 기록 보존·자동 재실행 안내를 유지합니다.",
+    "PSR(CTC, RVC/LVC) 계산기: 최신 승인 HS 추천·입력 수정·CTSH 경고 시점을 반영했습니다.",
+    "아모비나 수책재고 취합 REVIEW22: 과부족 저장값 확인, 불일치 출력 보류, 재계산·저장·재업로드 안내 및 취합 탭 우선 표시를 반영했습니다.",
+    "아모그린비나 수책재고 취합 V1.0.7: 고유 양식에 맞춘 과부족 저장값 확인과 재업로드 안내를 반영했습니다.",
+    "두 재고 모듈의 기존 취합 엔진과 나머지 5개 모듈의 업무 기준을 유지합니다. PSR의 기존 확인 필요·판정 보류도 유지합니다.",
+    "기존 프로그램 내부 온라인 업데이트와 이전 버전·설정·기록 보존을 지원합니다. 두 ZIP·두 단일 Setup은 공동 서명으로 검증·게시합니다."
+  ],
+  "removedModules": [],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-06T11:22:25+09:00",
+    "version": "0.1.40",
+    "sequence": 22,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.40.ecuss-update.zip": "d9029118874e39d55fc9f48f788cef6f5cca0d2b19806206f9aa170159ace3ca",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.40.ecuss-update.zip": "9d9163d4efef64e8cc7f6d58d1448ecf81be0249d2bc73995270e351d96f02c0",
+      "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.40.exe": "1953c4d94839f7b58f27e3694a0367644acb3501959892ed088220b46f3c8250",
+      "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.40.exe": "8bb63964f1d4c5d861440ba90b376de81426d66500850e9617664a1a7b2b1952"
+    }
+  }
+}
