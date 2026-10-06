@@ -1,0 +1,68 @@
+{
+  "schema": 1,
+  "version": "0.1.39",
+  "sequence": 21,
+  "requiredActiveVersion": "0.1.38",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37394773041",
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37395401648"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.39/TRADE_OPERATIONS_SUITE_Master_v0.1.39.ecuss-update.zip",
+      "releaseId": "desktop-0.1.39-master-r20261006.1",
+      "bytes": 13661499,
+      "sha256": "0e3dc7343c704f6c477e80d29df01c82e77e5cfa971a3feb51a152a93ae25f57"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.39/TRADE_OPERATIONS_SUITE_User_v0.1.39.ecuss-update.zip",
+      "releaseId": "desktop-0.1.39-user-r20261006.1",
+      "bytes": 13640474,
+      "sha256": "feb910b38815d734d3d76c9def808323bbd58898c246f32f8519dfc6ae678090"
+    }
+  ],
+  "installers": [
+    {
+      "profile": "master",
+      "name": "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.39.exe",
+      "bytes": 226251776,
+      "sha256": "b17a8020663dceb1045f4a2139cf63b9aa6d108c8552d076640566dab80d7fe1"
+    },
+    {
+      "profile": "user",
+      "name": "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.39.exe",
+      "bytes": 226230784,
+      "sha256": "e82b54308c608d66f33e21939bf58c79cc1e964951d6f99f48e0795a82ca8d20"
+    }
+  ],
+  "notes": [
+    "Master/User v0.1.39 Beta를 동일 앱·모듈·기준의 한 배포 단위로 제공합니다.",
+    "모듈 이름을 PSR(CTC, RVC/LVC) 계산기로 변경했습니다. 기존 모듈 ID와 저장·업데이트 연결은 유지합니다.",
+    "아모비나 수책재고 취합 REVIEW20: MOTOR 제목 확인·유효 미리보기 범위와 제품창고 하단 참고 목록 보존을 반영했습니다. 기존 과부족 현황 출력 기능을 유지합니다.",
+    "PSR 최신 승인본: VN Form AK 특수 BOM 입력 경로와 Appendix X의 ‘원산지 검토에 적용할 협정·기준’ 안내를 반영했습니다.",
+    "PSR 미구현·원문 불일치·확인 필요 및 판정 보류는 원본 기준을 유지합니다. 전체 원산지 판정 완료로 표시하지 않습니다.",
+    "나머지 6개 모듈의 업무 기준, 공통 UI·언어·작업 보호와 Master/User 권한 차이를 유지합니다.",
+    "기존 프로그램 내부 온라인 업데이트를 지원하며 설정·기록·업무 자료를 보존합니다. 두 ZIP·두 단일 Setup은 한 공동 서명으로 검증·게시합니다.",
+    "Windows 자동 검증 완료와 사용자 PC 적용을 구분합니다. Microsoft Excel 자체 표시·재계산은 별도 확인 대상입니다."
+  ],
+  "removedModules": [],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-06T09:56:03+09:00",
+    "version": "0.1.39",
+    "sequence": 21,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.39.ecuss-update.zip": "0e3dc7343c704f6c477e80d29df01c82e77e5cfa971a3feb51a152a93ae25f57",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.39.ecuss-update.zip": "feb910b38815d734d3d76c9def808323bbd58898c246f32f8519dfc6ae678090",
+      "TRADE_OPERATIONS_SUITE_Master_Setup_v0.1.39.exe": "b17a8020663dceb1045f4a2139cf63b9aa6d108c8552d076640566dab80d7fe1",
+      "TRADE_OPERATIONS_SUITE_User_Setup_v0.1.39.exe": "e82b54308c608d66f33e21939bf58c79cc1e964951d6f99f48e0795a82ca8d20"
+    }
+  }
+}
