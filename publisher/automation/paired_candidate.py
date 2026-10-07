@@ -17,7 +17,19 @@ def validate_pair(s):
  require(s.get('releaseStage') in ('beta','stable') and s.get('updateMode')=='online','Paired release stage/mode')
  require(s.get('publicContentReviewed') is True and s.get('windowsCandidateVerified') is True and bool(s.get('candidateVerificationRuns')),'Paired review incomplete')
  require([x['profile'] for x in s.get('assets',[])]==['master','user'],'Both exact package profiles required')
- require([x['profile'] for x in s.get('installers',[])]==['master','user'],'Both exact installers required')
+ installers=s.setdefault('installers',[])
+ require(isinstance(installers,list),'Installer list required')
+ legacy=tuple(map(int,s['version'].split('.')))<=(0,1,40)
+ mode=s.get('distributionMode','legacy-paired' if legacy else 'update-only')
+ require(mode in ('legacy-paired','update-only','requested-setup'),'Unknown distribution mode')
+ if mode=='legacy-paired':
+  require(legacy and [x['profile'] for x in installers]==['master','user'],'Legacy paired installers required')
+ elif mode=='update-only':
+  require(not installers,'Routine updates must not include Setup')
+ else:
+  require(s.get('setupRequested') is True and bool(installers),'Separate Master Setup request required')
+  profiles=[x['profile'] for x in installers]
+  require(profiles in (['master'],['user'],['master','user']),'Invalid requested Setup profiles')
  for p in s['assets']:
   require(p['path']==f"packages/v{s['version']}/TRADE_OPERATIONS_SUITE_{p['profile'].title()}_v{s['version']}.ecuss-update.zip",'Paired package path')
   require(re.fullmatch('[0-9a-f]{64}',p['sha256']) and type(p['bytes']) is int and 0<p['bytes']<=64*1024*1024,'Paired package hash/size')
@@ -40,7 +52,7 @@ def decode_parts(folder,record):
 def restore_pair(s):
  folder=ROOT/f"releases/v{s['version']}/transfer";index=strict_json((folder/'index.json').read_bytes())
  require(index['schema']==2 and index['version']==s['version'] and index['encoding']=='base64-text','Paired transfer identity')
- records=index['assets'];require([(x['kind'],x['profile']) for x in records]==[('package','master'),('package','user'),('setup','master'),('setup','user')],'Complete paired transfer required')
+ records=index['assets'];require([(x['kind'],x['profile']) for x in records]==[('package','master'),('package','user')]+[('setup',x['profile']) for x in s['installers']],'Complete paired transfer required')
  cache=Path(os.environ.get('RUNNER_TEMP',str(ROOT/'_candidate-temp')))/'paired-assets';cache.mkdir(parents=True,exist_ok=True)
  runtime=None;outputs=[]
  for record in records:
@@ -125,7 +137,7 @@ def preflight_pair(s):
  with zipfile.ZipFile(ROOT/'publisher/assistant-v1.1.1/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1.zip') as z:z.extractall(work/'helper')
  helper=work/'helper/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1/Publisher.Core.psm1'
  require('HELPER_CHECKS=8' in run('powershell','-NoProfile','-File',ROOT/'publisher/automation/CheckPairedRequest.ps1',helper,work/'request.json',ROOT/'updates/stable-longterm.signed.json',work/'history',s['version'],s['sequence'],packages[0]['sha256'],packages[1]['sha256']),'Existing helper rejects paired request')
- write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],windowsPublicDownloadChecks=7*len(labels),anonymousSetupDownloads=2,helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
+ write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],windowsPublicDownloadChecks=7*len(labels),anonymousSetupDownloads=len(s['installers']),helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
 def activation_pair(s,request,evidence,previous,current):
  from candidate import check_predecessor,check_slot
  validate_pair(s);check_predecessor(s,previous);check_slot(current,request);raw=base64.b64decode(request['payload'],validate=True)
@@ -134,5 +146,6 @@ def activation_pair(s,request,evidence,previous,current):
  require(c.get('installers')==s['installers'] and c.get('releaseStage')==s['releaseStage'],'Paired Setup/stage identity')
  for p,a in zip(c['packages'],s['assets']):require(all(p[k]==a[k] for k in ['profile','path','releaseId','bytes','sha256']) and p['commit']==evidence['packageCommit'],'Paired approved package differs')
  require(evidence['version']==s['version'] and evidence['sequence']==s['sequence'] and evidence['assetSha256']==asset_hashes(s),'Paired evidence identity')
- require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==2 and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
+ require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==len(s['installers']) and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
  return dict(schema=1,enabled=True,payloadSha256=sha(raw),requiredActiveVersion=s['requiredActiveVersion'],publicContentReviewed=True,windowsCandidateVerified=True,candidateVerificationRuns=s['candidateVerificationRuns'],masterReleaseApprovedAt=s['approval']['approvedAt'],updateMode='online',scope='Master/User same version, one approved Beta release',profiles=['master','user'],releaseStage=s['releaseStage'],assetSha256=asset_hashes(s))
+
