@@ -1,0 +1,18 @@
+{
+  "schema": 2,
+  "state": "feed-published",
+  "version": "0.1.41",
+  "sequence": 23,
+  "profiles": [
+    "master",
+    "user"
+  ],
+  "releaseStage": "beta",
+  "windowsChecksByProfile": {
+    "master": 36,
+    "user": 36
+  },
+  "windowsChecks": 72,
+  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/37595250062",
+  "userPcVerified": false
+}
