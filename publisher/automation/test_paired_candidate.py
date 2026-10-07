@@ -1,5 +1,7 @@
 """Reject incomplete pairs, changed installers and partial publication gates."""
-import base64,copy,json,tempfile,unittest
+import base64,copy,json,tempfile,unittest,zipfile
+from unittest.mock import patch
+import paired_candidate
 from pathlib import Path
 from candidate import check_predecessor
 from paired_candidate import validate_pair,asset_hashes,activation_pair,compare_modules,decode_parts,release_assets_match
@@ -35,6 +37,25 @@ class Pair(unittest.TestCase):
   self.assertEqual(self.activate()['profiles'],['master','user'])
   self.e['windowsPublicDownloadChecks']=0
   with self.assertRaises(ValueError):self.activate()
+ def test_binary_bootstrap_transport(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder);assets=[]
+   for profile in ['master','user']:
+    target=root/f'packages/v0.1.41/TRADE_OPERATIONS_SUITE_{profile.title()}_v0.1.41.ecuss-update.zip';target.parent.mkdir(parents=True,exist_ok=True)
+    manifest=dict(appVersion='0.1.41',releaseId='desktop-0.1.41-'+profile+'-test',profile=profile,recordsBootstrap='initial-update',files=[])
+    with zipfile.ZipFile(target,'w') as z:z.writestr('manifest.json',json.dumps(manifest))
+    assets.append(dict(profile=profile,path=target.relative_to(root).as_posix(),bytes=target.stat().st_size,sha256=sha(target.read_bytes()),releaseId=manifest['releaseId']))
+   spec=dict(version='0.1.41',distributionMode='update-only',packageTransport='git-binary',installers=[],assets=assets,recordsBootstrapApproval='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS')
+   with patch.object(paired_candidate,'ROOT',root):
+    self.assertEqual(len(paired_candidate.restore_pair(spec)),2)
+    spec.pop('recordsBootstrapApproval')
+    with self.assertRaises(ValueError):paired_candidate.restore_pair(spec)
+    spec['recordsBootstrapApproval']='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS'
+    (root/'releases/v0.1.41/transfer').mkdir(parents=True)
+    with self.assertRaises(ValueError):paired_candidate.restore_pair(spec)
+    (root/'releases/v0.1.41/transfer').rmdir()
+    (root/assets[0]['path']).write_bytes(b'altered')
+    with self.assertRaises(ValueError):paired_candidate.restore_pair(spec)
  def test_missing_user(self):
   self.s['assets'].pop()
   with self.assertRaises(ValueError):validate_pair(self.s)

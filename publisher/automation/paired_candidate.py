@@ -50,6 +50,20 @@ def decode_parts(folder,record):
   require(len(raw)==part['bytes'] and sha(raw)==part['sha256'],'Paired fragment corruption');chunks.append(raw)
  raw=b''.join(chunks);require(len(raw)==record['transferBytes'] and sha(raw)==record['transferSha256'],'Paired compact bytes changed');return raw
 def restore_pair(s):
+ if s.get('packageTransport')=='git-binary':
+  # Approved distribution ZIPs are Git binary blobs, never base64 source fragments.
+  require(s.get('distributionMode')=='update-only' and not s['installers'],'Binary transport is update-only')
+  require(not (ROOT/f"releases/v{s['version']}/transfer").exists(),'No duplicate text-encoded bootstrap archive')
+  outputs=[]
+  for approved in s['assets']:
+   target=ROOT/approved['path'];raw=target.read_bytes()
+   require(len(raw)==approved['bytes'] and sha(raw)==approved['sha256'],'Exact reviewed binary changed')
+   manifest=archive(target,dict(approved,appVersion=s['version']))
+   if manifest.get('recordsBootstrap','none')!='none':
+    require(s['version']=='0.1.41' and manifest['recordsBootstrap']=='initial-update' and s.get('recordsBootstrapApproval')=='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS','Only approved one-time records bootstrap is permitted')
+   outputs.append(target)
+  return outputs
+ require(s.get('packageTransport','base64-text')=='base64-text','Unknown package transport')
  folder=ROOT/f"releases/v{s['version']}/transfer";index=strict_json((folder/'index.json').read_bytes())
  require(index['schema']==2 and index['version']==s['version'] and index['encoding']=='base64-text','Paired transfer identity')
  records=index['assets'];require([(x['kind'],x['profile']) for x in records]==[('package','master'),('package','user')]+[('setup',x['profile']) for x in s['installers']],'Complete paired transfer required')
@@ -148,4 +162,3 @@ def activation_pair(s,request,evidence,previous,current):
  require(evidence['version']==s['version'] and evidence['sequence']==s['sequence'] and evidence['assetSha256']==asset_hashes(s),'Paired evidence identity')
  require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==len(s['installers']) and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
  return dict(schema=1,enabled=True,payloadSha256=sha(raw),requiredActiveVersion=s['requiredActiveVersion'],publicContentReviewed=True,windowsCandidateVerified=True,candidateVerificationRuns=s['candidateVerificationRuns'],masterReleaseApprovedAt=s['approval']['approvedAt'],updateMode='online',scope='Master/User same version, one approved Beta release',profiles=['master','user'],releaseStage=s['releaseStage'],assetSha256=asset_hashes(s))
-
