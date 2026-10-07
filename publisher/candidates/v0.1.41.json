@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "version": "0.1.41",
+  "sequence": 23,
+  "requiredActiveVersion": "0.1.40",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "distributionMode": "update-only",
+  "packageTransport": "git-binary-parts",
+  "recordsBootstrapApproval": "YoubinNa/TRADE-OPERATIONS-WORK-RECORDS",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37592015312",
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37592616871"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.41/TRADE_OPERATIONS_SUITE_Master_v0.1.41.ecuss-update.zip",
+      "releaseId": "desktop-0.1.41-master-r20261007.1",
+      "bytes": 13889057,
+      "sha256": "0d62844453866bb41a655eb9487195a13acdcc999abbc99f08a06a362fa0f02e"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.41/TRADE_OPERATIONS_SUITE_User_v0.1.41.ecuss-update.zip",
+      "releaseId": "desktop-0.1.41-user-r20261007.1",
+      "bytes": 13869550,
+      "sha256": "aeefeb9446bd4809efd224553ae776d140fa1ee2fe292a6dbdce32cf57850d10"
+    }
+  ],
+  "installers": [],
+  "removedModules": [],
+  "notes": [
+    "Master/User v0.1.41 Beta 업데이트를 함께 제공합니다. 이번 배포에는 Setup이 없습니다.",
+    "Validation for Balance sheet: 메인 모듈 목록과 엑셀 선택 영역 위에 AMOVINA / AMOGREEN VINA의 완료·미완료와 완료 시각을 표시합니다.",
+    "회사별 최신 검증 공유용 HTML을 프로그램에서 열거나 다운로드할 수 있습니다. 원본 Excel은 온라인에 업로드하지 않습니다.",
+    "수행 기준은 베트남 시각 월~토 회사별 매일 1회입니다. 최신 결과는 회사별 1개씩 총 2개만 보관하며 새 저장 완료 시 이전 결과를 대체합니다.",
+    "이번 업데이트가 업무기록 연결을 자동 설정합니다. 기존 사용자는 별도 인증키 입력이나 등록이 필요 없습니다.",
+    "PSR 계산기: 승인된 EVFTA 후속 검토와 혼방 섬유 중량 허용기준 R7을 적용했습니다. 기존 판정 보류와 증빙 확인 조건은 유지합니다.",
+    "기존 설정·결과 보존 및 업데이트 실패 시 이전 버전 복구를 유지합니다."
+  ],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-07T16:58:30+09:00",
+    "version": "0.1.41",
+    "sequence": 23,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.41.ecuss-update.zip": "0d62844453866bb41a655eb9487195a13acdcc999abbc99f08a06a362fa0f02e",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.41.ecuss-update.zip": "aeefeb9446bd4809efd224553ae776d140fa1ee2fe292a6dbdce32cf57850d10"
+    }
+  },
+  "binaryParts": {
+    "master": [
+      {
+        "path": "packages/v0.1.41/transfer/master-000.bin",
+        "bytes": 6000000,
+        "sha256": "53a83ae683ea48cde54d695ac69202812b01362d62cc5284d58b9df0dde814d2"
+      },
+      {
+        "path": "packages/v0.1.41/transfer/master-001.bin",
+        "bytes": 6000000,
+        "sha256": "b4e127dae5efb3dd7b76705063b7be8a5211dd65152ab759c1ab1efdf75101fc"
+      },
+      {
+        "path": "packages/v0.1.41/transfer/master-002.bin",
+        "bytes": 1889057,
+        "sha256": "c8f2184729588616e5d2d940d5c729839610b6625674a3094c65f0ea015a3b3c"
+      }
+    ],
+    "user": [
+      {
+        "path": "packages/v0.1.41/transfer/user-000.bin",
+        "bytes": 6000000,
+        "sha256": "819ce0dd5cb98be00ed2268a43fbfefeb140de9f5c348d190505864d70e6d7ef"
+      },
+      {
+        "path": "packages/v0.1.41/transfer/user-001.bin",
+        "bytes": 6000000,
+        "sha256": "42e56dca71697fc9360969432f1915bd03d4256da329e42183eec2ede966d347"
+      },
+      {
+        "path": "packages/v0.1.41/transfer/user-002.bin",
+        "bytes": 1869550,
+        "sha256": "270e880877db231d2f36c9cb6c1188b7c0696f663eabdde79e7440e0747901f7"
+      }
+    ]
+  }
+}
