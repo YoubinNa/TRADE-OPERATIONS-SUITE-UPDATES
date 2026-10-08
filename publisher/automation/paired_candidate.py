@@ -3,6 +3,7 @@ import base64,json,os,re,shutil,subprocess,time,urllib.request,zipfile
 from datetime import datetime,timezone
 from pathlib import Path
 from verify import require,sha,strict_json,signature,archive,REPO,KEY_ID,catalog_identity
+from records_gate import check_pair as check_records_pair, require_pair as require_records_pair
 ROOT=Path(__file__).resolve().parents[2]
 RUNTIME_URL='https://msedge.sf.dl.delivery.mp.microsoft.com/filestreamingservice/files/06fb6ad8-1976-4e78-9ceb-3ae170edebde/MicrosoftEdgeWebView2RuntimeInstallerX64.exe'
 RUNTIME_SHA='771042db15cb5c463bac51a8408e70183d7130e8ac946709384c2223da582c1b'
@@ -164,6 +165,7 @@ def preflight_pair(s):
   compile_probe(cc,work/label,work/('gate-'+label),'UserBootstrapProbe.cs' if label=='next-user' and 'user' not in old['catalog']['profiles'] else 'PackageProbe.cs')
  for setup in s['installers']:
   url=f"https://github.com/{REPO}/releases/download/v{s['version']}/{setup['name']}";dest=work/setup['name'];urllib.request.urlretrieve(url,dest);require(dest.stat().st_size==setup['bytes'] and sha(dest.read_bytes())==setup['sha256'],'Anonymous exact Setup download failed')
+ records_profiles=check_records_pair(s['version'],work,cc,compile_probe,run,'preflight')
  payload=dict(schema=1,product='ECUSS.ValidationSuite',channel='stable',sequence=s['sequence'],issuedAt=datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.0000000+00:00'),expiresAt='2099-12-31T23:59:59.0000000+00:00',catalog=catalog)
  raw=(json.dumps(payload,ensure_ascii=False,indent=2)+'\n').encode();req=dict(schema=1,product='TRADE-OPERATIONS-SUITE-PUBLISHER',channel='longterm',state='ready',minimumAssistantVersion='1.1.1',keyId=KEY_ID,payload=base64.b64encode(raw).decode(),payloadSha256=sha(raw),notes=s['notes'])
  saved=ROOT/f"publisher/requests/v{s['version']}.json"
@@ -173,9 +175,10 @@ def preflight_pair(s):
  with zipfile.ZipFile(ROOT/'publisher/assistant-v1.1.1/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1.zip') as z:z.extractall(work/'helper')
  helper=work/'helper/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1/Publisher.Core.psm1'
  require('HELPER_CHECKS=8' in run('powershell','-NoProfile','-File',ROOT/'publisher/automation/CheckPairedRequest.ps1',helper,work/'request.json',ROOT/'updates/stable-longterm.signed.json',work/'history',s['version'],s['sequence'],packages[0]['sha256'],packages[1]['sha256'],len(s['installers'])),'Existing helper rejects paired request')
- write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],windowsPublicDownloadChecks=7*len(labels),anonymousSetupDownloads=len(s['installers']),helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
+ write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],recordsConnectionProfiles=records_profiles,windowsPublicDownloadChecks=7*len(labels),anonymousSetupDownloads=len(s['installers']),helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
 def activation_pair(s,request,evidence,previous,current):
  from candidate import check_predecessor,check_slot
+ require_records_pair(s['version'],evidence.get('recordsConnectionProfiles'))
  validate_pair(s);check_predecessor(s,previous);check_slot(current,request);raw=base64.b64decode(request['payload'],validate=True)
  require(request['payloadSha256']==sha(raw)==evidence['payloadSha256'],'Paired checked payload differs');d=strict_json(raw);c=d['catalog'];catalog_identity(c)
  require(request['state']=='ready' and c['profiles']==['master','user'] and d['sequence']==s['sequence'] and c['appVersion']==s['version'],'Paired request identity')
@@ -184,4 +187,5 @@ def activation_pair(s,request,evidence,previous,current):
  require(evidence['version']==s['version'] and evidence['sequence']==s['sequence'] and evidence['assetSha256']==asset_hashes(s),'Paired evidence identity')
  require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==len(s['installers']) and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
  return dict(schema=1,enabled=True,payloadSha256=sha(raw),requiredActiveVersion=s['requiredActiveVersion'],publicContentReviewed=True,windowsCandidateVerified=True,candidateVerificationRuns=s['candidateVerificationRuns'],masterReleaseApprovedAt=s['approval']['approvedAt'],updateMode='online',scope='Master/User same version, one approved Beta release',profiles=['master','user'],releaseStage=s['releaseStage'],assetSha256=asset_hashes(s))
+
 

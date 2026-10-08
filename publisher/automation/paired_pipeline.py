@@ -4,6 +4,7 @@ from pathlib import Path
 import pipeline as base
 from paired_candidate import validate_pair,asset_hashes,compare_modules,compiler,compile_probe,release_assets_match
 from verify import ready,require,strict_json,signature,sha,archive,registry_matches,REPO
+from records_gate import check_pair as check_records_pair, require_pair as require_records_pair
 ROOT,WORK,FEED=base.ROOT,base.WORK,base.FEED
 
 def prepare():
@@ -37,10 +38,12 @@ def probe():
   else:
    require(profile=='user','Master predecessor missing');exe=compile_probe(cc,WORK/'next-user',WORK/'gate-next-user','UserBootstrapProbe.cs')
    result=base.run(exe,WORK/'next-user',WORK/'candidate.json',WORK/'previous.json');print(result);require('CHECKS=15' in result,'User bootstrap gate incomplete');counts[profile]=15;downloads+=1
- state.update(windowsChecksByProfile=counts,windowsChecks=sum(counts.values()),anonymousPackageDownloads=downloads,pairedModulesIdentical=True)
+ records_profiles=check_records_pair(state['version'],WORK,cc,compile_probe,base.run,'signed')
+ state.update(recordsConnectionProfiles=records_profiles,windowsChecksByProfile=counts,windowsChecks=sum(counts.values()),anonymousPackageDownloads=downloads,pairedModulesIdentical=True)
  base.write(WORK/'state.json',state)
 
 def require_gates(state):
+ require_records_pair(state['version'],state.get('recordsConnectionProfiles'))
  expected={p:(36 if p in state['oldProfiles'] else 15) for p in ['master','user']}
  require(state.get('windowsChecksByProfile')==expected and state.get('windowsChecks')==sum(expected.values()) and state.get('pairedModulesIdentical') is True,'Both profile gates required')
 
@@ -58,6 +61,8 @@ def finish():
  feed_checks=base.verify_public_feed(REPO,FEED,state['head'],r['envelope'],signature);v=state['version'];seq=state['sequence'];folder=f'publisher/publications/seq-{seq}';beta=state['releaseStage']=='beta'
  base.github('release','edit',f'v{v}','--prerelease='+str(beta).lower(),'--latest='+str(not beta).lower(),'--title',f'TRADE OPERATIONS SUITE — Master / User v{v}'+(' Beta' if beta else ''),'--notes-file',f'releases/v{v}/NOTES.md')
  release=strict_json(base.github('api',f'repos/{REPO}/releases/tags/v{v}'));require(release['prerelease']==beta,'Release stage changed');release_assets_match(release,strict_json((ROOT/f'releases/v{v}/publish.json').read_bytes()));base.guard(state)
- status=dict(schema=2,state='completed',version=v,sequence=seq,profiles=['master','user'],releaseStage=state['releaseStage'],oneSignedPayload=True,pairedModulesIdentical=True,windowsChecks=state['windowsChecks'],windowsChecksByProfile=state['windowsChecksByProfile'],productionSignatureVerified=True,anonymousPackageDownloads=state['anonymousPackageDownloads'],publicFeedVerified=True,publicFeedChecks=feed_checks,applyRollbackProfiles=state['oldProfiles'],firstPublicInstallProfiles=[p for p in ['master','user'] if p not in state['oldProfiles']],settingsAndResultsPreserved=True,updateMode='online',runUrl=os.environ['RUN_URL'],userPcVerified=False)
+ records_profiles=check_records_pair(state['version'],WORK,compiler(),compile_probe,base.run,'published')
+ status=dict(recordsConnectionProfiles=records_profiles,schema=2,state='completed',version=v,sequence=seq,profiles=['master','user'],releaseStage=state['releaseStage'],oneSignedPayload=True,pairedModulesIdentical=True,windowsChecks=state['windowsChecks'],windowsChecksByProfile=state['windowsChecksByProfile'],productionSignatureVerified=True,anonymousPackageDownloads=state['anonymousPackageDownloads'],publicFeedVerified=True,publicFeedChecks=feed_checks,applyRollbackProfiles=state['oldProfiles'],firstPublicInstallProfiles=[p for p in ['master','user'] if p not in state['oldProfiles']],settingsAndResultsPreserved=True,updateMode='online',runUrl=os.environ['RUN_URL'],userPcVerified=False)
  base.write(ROOT/folder/'status.json',status);base.write(ROOT/'publisher/status.json',status);base.write(ROOT/'publisher/current-request.json',dict(schema=1,product='TRADE-OPERATIONS-SUITE-PUBLISHER',channel='longterm',state='idle',lastPublishedVersion=v,lastPublishedSequence=seq,profiles=['master','user'],statusUrl=f'https://github.com/{REPO}/blob/main/publisher/status.json'))
  base.commit([folder,'publisher/status.json','publisher/current-request.json'],f'publisher: synchronized Master/User v{v} complete');print('COMPLETE: one signed payload, both profiles verified, one public feed activated.')
+
