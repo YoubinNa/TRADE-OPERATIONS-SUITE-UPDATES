@@ -1,0 +1,92 @@
+{
+  "schema": 1,
+  "version": "0.1.44",
+  "sequence": 24,
+  "requiredActiveVersion": "0.1.41",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "distributionMode": "update-only",
+  "packageTransport": "git-binary-parts",
+  "recordsBootstrapApproval": "YoubinNa/TRADE-OPERATIONS-WORK-RECORDS",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/37709301673"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.44/TRADE_OPERATIONS_SUITE_Master_v0.1.44.ecuss-update.zip",
+      "releaseId": "desktop-0.1.44-master-r20261008.1",
+      "bytes": 13909106,
+      "sha256": "e2e940a352a092ad8267a51adea6dfa993978994ee39ef8cd48d818ef1cd2338"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.44/TRADE_OPERATIONS_SUITE_User_v0.1.44.ecuss-update.zip",
+      "releaseId": "desktop-0.1.44-user-r20261008.1",
+      "bytes": 13889686,
+      "sha256": "85e271cfab121c22887347b81b79d7bc6562456ecc8e3ae1bcb12fb1b80ad693"
+    }
+  ],
+  "installers": [],
+  "removedModules": [],
+  "notes": [
+    "Master/User v0.1.44 Beta 업데이트를 함께 제공합니다.",
+    "PSR 계산기 R12: EVFTA 섬유 중량·가액 경로 확대, 한국산 직물 조건부 누적 및 일부 특수 BOM 검토를 반영했습니다.",
+    "CPTPP 제품별 FIFO 예약 백업 JSON 미리보기·빈 장부 복원 및 저장 원장 대조를 제공합니다. 기존 기록 충돌·중복 차감·재고 초과를 방지하며 원본의 보류 조건을 유지합니다.",
+    "PSR 예약 백업 JSON 다운로드와 Windows 파일 저장·복원 연결을 개선했습니다.",
+    "업무기록 연결 인증정보를 자동 갱신합니다. Master/User 모두 별도 키 입력 없이 기록 조회·공유 기능을 사용하도록 구성했습니다.",
+    "앞으로도 매 업데이트에 유효한 업무기록 저장소 전용 인증정보를 포함합니다. 기존 설정이 없는 PC도 자동 설정하며 이전 버전 복구 시 최신 저장 키와 업무 자료를 보존합니다.",
+    "회사별 당일 수행 상태와 연결 실패 표시를 구분하며 기존 검증 결과를 유지합니다.",
+    "업데이트 적용 후 프로그램을 재시작합니다. 이번 배포에는 별도 신규 설치용 Setup이 없습니다."
+  ],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-08T09:25:05+09:00",
+    "version": "0.1.44",
+    "sequence": 24,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.44.ecuss-update.zip": "e2e940a352a092ad8267a51adea6dfa993978994ee39ef8cd48d818ef1cd2338",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.44.ecuss-update.zip": "85e271cfab121c22887347b81b79d7bc6562456ecc8e3ae1bcb12fb1b80ad693"
+    }
+  },
+  "binaryParts": {
+    "master": [
+      {
+        "path": "packages/v0.1.44/transfer/master-000.bin",
+        "bytes": 6000000,
+        "sha256": "c4833ddb1b531d6939882859548f61d3da2ac491fe26f1a69e3b814bf89a8580"
+      },
+      {
+        "path": "packages/v0.1.44/transfer/master-001.bin",
+        "bytes": 6000000,
+        "sha256": "c1a2270a311912e5df5c74d862314b1159d174f87f1fd189cdbe363ff5614e8a"
+      },
+      {
+        "path": "packages/v0.1.44/transfer/master-002.bin",
+        "bytes": 1909106,
+        "sha256": "7b4bd72f6be7b48ea559faca80b1d864b9835cc3af86100a7b10c05cf6e06035"
+      }
+    ],
+    "user": [
+      {
+        "path": "packages/v0.1.44/transfer/user-000.bin",
+        "bytes": 6000000,
+        "sha256": "7283865baa1337a116fb602f718bc1fb0ef881e71c7f37c09d34d9ec5b994d8a"
+      },
+      {
+        "path": "packages/v0.1.44/transfer/user-001.bin",
+        "bytes": 6000000,
+        "sha256": "4eba045120a86947498d8613786d9d7c2e11ffa24a9a4ffcc12b1a53c9a64893"
+      },
+      {
+        "path": "packages/v0.1.44/transfer/user-002.bin",
+        "bytes": 1889686,
+        "sha256": "8ffb9831d042d1d754ae644bd076d4ee9b8bb86e9e88092d0d8033c360534dbc"
+      }
+    ]
+  },
+  "recordsBootstrapPolicy": "every-update"
+}
