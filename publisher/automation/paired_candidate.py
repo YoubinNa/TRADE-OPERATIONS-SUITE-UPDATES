@@ -52,6 +52,12 @@ def decode_parts(folder,record):
 def validate_records_bootstrap(s, manifest):
  version=tuple(map(int,s['version'].split('.')))
  mode=manifest.get('recordsBootstrap','none')
+ if mode=='supabase':
+  require(version>=(0,1,48),'Supabase bootstrap starts with the reviewed storage release')
+  require(s.get('recordsBootstrapPolicy')=='supabase-public' and s.get('recordsBootstrapApproval')=='https://iiiqtzisgjvbcxwmvchf.supabase.co','Approved public Supabase project required')
+  require(re.fullmatch('[0-9a-f]{64}',s.get('recordsBootstrapPublicConfigSha256','')) is not None,'Exact public configuration digest required')
+  require('recordsCredentialGeneration' not in manifest,'Legacy embedded-credential generation forbidden')
+  return
  if version>(0,1,41):
   require(s.get('recordsBootstrapApproval')=='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS' and s.get('recordsBootstrapPolicy')=='every-update','Records-only recurring distribution policy required')
   require(len(version)==3 and all(0<=v<1000 for v in version),'Credential version range')
@@ -158,6 +164,11 @@ def preflight_pair(s):
  source=strict_json((work/'next-master/module-sources.json').read_bytes());identity_source=lambda r:{k:r.get(k) for k in ['moduleId','repository','repositoryId','defaultBranch']}
  catalog=dict(schema=1,product='ECUSS.ValidationSuite',appVersion=s['version'],releaseStage=s['releaseStage'],profiles=['master','user'],modules=[dict(id=m['id'],repository=next(r['repository'] for r in source['modules'] if r['moduleId']==m['id']),version=m['version'],rulesVersion=m['rulesVersion']) for m in manifests['master']['modules']],packages=packages,installers=s['installers'],removedModules=s.get('removedModules',[]),repositoryRegistry=dict(schema=1,suite=identity_source(source['suite']),modules=[identity_source(r) for r in source['modules']]))
  catalog_identity(catalog);write(work/'catalog.json',catalog);cc=compiler()
+ if s.get('recordsBootstrapPolicy')=='supabase-public':
+  for profile in ['master','user']:
+   validate_records_bootstrap(s,manifests[profile])
+   probe=compile_probe(cc,work/('next-'+profile),work/('storage-'+profile),'SupabaseBootstrapProbe.cs')
+   require('SUPABASE_BOOTSTRAP_OK' in run(probe,s['recordsBootstrapApproval'],s['recordsBootstrapPublicConfigSha256']),'Packaged public connection check incomplete')
  labels=['old-'+p for p in old['catalog']['profiles']]+['next-master','next-user']
  for label in labels:
   exe=compile_probe(cc,work/label,work/('probe-'+label),'CandidateDownloadProbe.cs');require('Checks: 7;' in run(exe,work/label,work/'catalog.json'),'Paired public download probe incomplete')

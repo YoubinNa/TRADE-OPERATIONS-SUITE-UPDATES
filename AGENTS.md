@@ -2,7 +2,7 @@
 
 - This repository is PUBLIC. It contains approved distribution material only.
 - Read README.md and DISTRIBUTION_POLICY.md before making changes.
-- Never copy private development history, source trees, internal test evidence, business documents, personal mail assets, credentials, or private signing keys here, except for the narrowly approved work-records bootstrap credential in designated distribution binaries as specified in DISTRIBUTION_POLICY.md. Never commit the credential as source, documentation, or logs.
+- Never copy private development history, source trees, internal test evidence, business documents, personal mail assets, credentials, or private signing keys here. Never include private credentials in new distribution binaries, source, documentation, or logs.
 - Verify complete final package contents before publication; a filename or hash scan alone is insufficient.
 - Keep published version bytes immutable. Record new bytes under a new approved version.
 - Never publish an unverified or placeholder active update feed. Repository availability is not evidence that an update is ready.
@@ -14,5 +14,6 @@
 
 - 2026-10-03 Master/User synchronization: after the first paired Beta, require both profiles in every release with identical app/module/rules/core versions. Prepare both update packages together; installers are prepared only upon a separate Master request, send one signing request, verify both profiles and activate one signed feed atomically. Permission/mail/presentation differences remain intentional. Never publish a Master-only update after a paired release or call queued/offline PCs synchronized installations.
 
-- Routine releases publish updates only. Do not generate or publish Setup automatically. A separately requested new-install Setup includes only the approved records-repository credential and imports it automatically; every routine Master/User update also contains the current valid records-only credential. A newer credential generation replaces the protected local connection automatically; rollback preserves newer saved credentials and business results. This policy change does not authorize deleting old assets or sending a new signing request.
-
+- Routine releases publish Master/User updates only; Setup requires a separate explicit request. Shared records/HTML/stock use Supabase directly, with no company server, always-on PC or relay. The former embedded GitHub records-token policy is superseded for new releases. Only the approved project URL and publishable key may be distributed. Never embed a PAT, Supabase secret/service_role, Master password/session or signing key. User connects automatically after updating; Master completes initial storage authentication and keeps a DPAPI-protected session. Server RLS enforces Master stock permissions. Anonymous access does not establish employee identity.
+- Validate the exact public Supabase project/configuration digest in both immutable distribution executables, keeping package/hash/version/signature/Windows/download gates. Existing legacy release bytes remain unchanged; historical validation does not authorize new credential distribution.
+- Preserve settings, business results, saved authentication and bounded download cache across update/rollback. Refer to DISTRIBUTION_POLICY.md for the current durable policy; do not duplicate changing ready/published state here.
