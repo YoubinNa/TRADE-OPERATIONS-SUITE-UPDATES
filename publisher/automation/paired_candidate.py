@@ -49,6 +49,16 @@ def decode_parts(folder,record):
   raw=base64.b64decode((folder/part['name']).read_bytes(),validate=True)
   require(len(raw)==part['bytes'] and sha(raw)==part['sha256'],'Paired fragment corruption');chunks.append(raw)
  raw=b''.join(chunks);require(len(raw)==record['transferBytes'] and sha(raw)==record['transferSha256'],'Paired compact bytes changed');return raw
+def validate_records_bootstrap(s, manifest):
+ version=tuple(map(int,s['version'].split('.')))
+ mode=manifest.get('recordsBootstrap','none')
+ if version>(0,1,41):
+  require(s.get('recordsBootstrapApproval')=='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS' and s.get('recordsBootstrapPolicy')=='every-update','Records-only recurring distribution policy required')
+  require(len(version)==3 and all(0<=v<1000 for v in version),'Credential version range')
+  generation=version[0]*1000000+version[1]*1000+version[2]
+  require(mode=='every-update' and manifest.get('recordsCredentialGeneration')==generation,'Every update must carry the current versioned records connection')
+ elif mode!='none':
+  require(s['version']=='0.1.41' and mode=='initial-update' and s.get('recordsBootstrapApproval')=='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS','Legacy records bootstrap scope')
 def restore_pair(s):
  if s.get('packageTransport') in ('git-binary','git-binary-parts'):
   # Approved distribution ZIPs are Git binary blobs, never base64 source fragments.
@@ -71,10 +81,10 @@ def restore_pair(s):
    else:raw=target.read_bytes()
    require(len(raw)==approved['bytes'] and sha(raw)==approved['sha256'],'Exact reviewed binary changed')
    manifest=archive(target,dict(approved,appVersion=s['version']))
-   if manifest.get('recordsBootstrap','none')!='none':
-    require(s['version']=='0.1.41' and manifest['recordsBootstrap']=='initial-update' and s.get('recordsBootstrapApproval')=='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS','Only approved one-time records bootstrap is permitted')
+   validate_records_bootstrap(s, manifest)
    outputs.append(target)
   return outputs
+ require(tuple(map(int,s['version'].split('.')))<=(0,1,41),'Recurring credentials require approved binary transport, never text fragments')
  require(s.get('packageTransport','base64-text')=='base64-text','Unknown package transport')
  folder=ROOT/f"releases/v{s['version']}/transfer";index=strict_json((folder/'index.json').read_bytes())
  require(index['schema']==2 and index['version']==s['version'] and index['encoding']=='base64-text','Paired transfer identity')
@@ -174,3 +184,4 @@ def activation_pair(s,request,evidence,previous,current):
  require(evidence['version']==s['version'] and evidence['sequence']==s['sequence'] and evidence['assetSha256']==asset_hashes(s),'Paired evidence identity')
  require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==len(s['installers']) and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
  return dict(schema=1,enabled=True,payloadSha256=sha(raw),requiredActiveVersion=s['requiredActiveVersion'],publicContentReviewed=True,windowsCandidateVerified=True,candidateVerificationRuns=s['candidateVerificationRuns'],masterReleaseApprovedAt=s['approval']['approvedAt'],updateMode='online',scope='Master/User same version, one approved Beta release',profiles=['master','user'],releaseStage=s['releaseStage'],assetSha256=asset_hashes(s))
+

@@ -64,6 +64,16 @@ class Pair(unittest.TestCase):
     spec['packageTransport']='git-binary'
     (root/assets[0]['path']).write_bytes(b'altered')
     with self.assertRaises(ValueError):paired_candidate.restore_pair(spec)
+ def test_recurring_records_credentials(self):
+  spec=dict(version='0.1.42',recordsBootstrapApproval='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS',recordsBootstrapPolicy='every-update')
+  manifest=dict(recordsBootstrap='every-update',recordsCredentialGeneration=1042)
+  paired_candidate.validate_records_bootstrap(spec,manifest)
+  for bad in [dict(recordsBootstrap='none'),dict(recordsBootstrap='initial-update'),dict(manifest,recordsCredentialGeneration=1041),dict(manifest,recordsCredentialGeneration=1043)]:
+   with self.assertRaises(ValueError):paired_candidate.validate_records_bootstrap(spec,bad)
+  for bad in [dict(spec,recordsBootstrapPolicy='one-time'),dict(spec,recordsBootstrapApproval='YoubinNa/TRADE-OPERATIONS-SUITE')]:
+   with self.assertRaises(ValueError):paired_candidate.validate_records_bootstrap(bad,manifest)
+  paired_candidate.validate_records_bootstrap(dict(spec,version='0.1.43'),dict(manifest,recordsCredentialGeneration=1043))
+  paired_candidate.validate_records_bootstrap(dict(spec,version='0.2.0'),dict(manifest,recordsCredentialGeneration=2000))
  def test_missing_user(self):
   self.s['assets'].pop()
   with self.assertRaises(ValueError):validate_pair(self.s)
@@ -110,4 +120,5 @@ class Pair(unittest.TestCase):
    folder=Path(t);raw=b'synthetic';(folder/'user-package-000.b64').write_bytes(base64.b64encode(raw));p=dict(name='user-package-000.b64',bytes=len(raw),sha256=sha(raw));r=dict(profile='user',kind='package',parts=[p],transferBytes=len(raw),transferSha256=sha(raw));self.assertEqual(decode_parts(folder,r),raw);(folder/p['name']).write_bytes(base64.b64encode(b'changed'))
    with self.assertRaises(ValueError):decode_parts(folder,r)
 if __name__=='__main__':unittest.main()
+
 
