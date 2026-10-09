@@ -76,6 +76,20 @@ static class PackageProbe {
                 Console.WriteLine("DIAGNOSTIC pending package: "+Json.Write(observed.package));
                 Console.WriteLine("DIAGNOSTIC selected package: "+Json.Write(expected));
                 Console.WriteLine("DIAGNOSTIC exact download hash: "+PackagePolicy.HashFile(download));
+                for(int attempt=0;attempt<3;attempt++){
+                    try {
+                        var retried=OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"diagnostic-stage-"+attempt));
+                        Console.WriteLine("DIAGNOSTIC repeat "+attempt+": accepted "+retried.releaseId);
+                    } catch(InvalidDataException error) { Console.WriteLine("DIAGNOSTIC repeat "+attempt+": "+error.Message); }
+                }
+                string before=Json.Write(expected);
+                GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
+                typeof(PublishedPackage).GetProperty("sha256");
+                typeof(PublishedPackage).GetProperty("bytes");
+                string after=Json.Write(expected);
+                Console.WriteLine("DIAGNOSTIC order before: "+before);
+                Console.WriteLine("DIAGNOSTIC order after: "+after);
+                Console.WriteLine("DIAGNOSTIC same object serialization stable: "+(before==after));
                 throw;
             }
             Check(verified.releaseId==next.releaseId,"signed staging");store.Commit(stage,verified,"update");
