@@ -20,7 +20,45 @@ static class PackageProbe {
     static int checks;
     static void Check(bool b,string name){if(!b)throw new InvalidDataException(name);checks++;Console.WriteLine("PASS "+name);}
     static void Reject(Action a,string name){bool rejected=false;try{a();}catch(InvalidDataException){rejected=true;}Check(rejected,name);}
+    static string RunChild(string mode, string root, Release next, long sequence) {
+        string quote = "\"";
+        var info = new System.Diagnostics.ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location,
+            "apply-child "+mode+" "+quote+root+quote+" "+next.releaseId+" "+next.appVersion+" "+sequence) {
+            UseShellExecute=false, RedirectStandardOutput=true, RedirectStandardError=true };
+        using(var process=System.Diagnostics.Process.Start(info)) {
+            string output=process.StandardOutput.ReadToEnd(),error=process.StandardError.ReadToEnd();process.WaitForExit();
+            Console.Write(output);Console.Write(error);
+            if(process.ExitCode!=0)throw new InvalidDataException("Isolated apply failed: "+mode);
+            return output;
+        }
+    }
+    static int ApplyChild(string[] args) {
+        string mode=args[1];var store=new ReleaseStore(args[2]);
+        // The real Host writes pending metadata; a separate Launcher process applies it.
+        // Every rejection and valid apply starts with independent CLR/reflection state.
+        var current=PackagePolicy.VerifyDirectory(store.PathFor(store.ReadState().active));
+        string stage=Path.Combine(store.Root,"stage-"+Guid.NewGuid().ToString("N"));
+        if(mode!="valid") {
+            string expected=mode=="signature"?"Release signature verification failed.":
+                mode=="package"?"Pending package is not signed and approved.":"The downloaded update changed.";
+            try { OnlinePackage.ExtractPending(store.Root,current,stage); }
+            catch(InvalidDataException error) {
+                if(error.Message!=expected)throw new InvalidDataException("Wrong rejection: "+error.Message);
+                Console.WriteLine("REJECTED="+mode);return 0;
+            }
+            throw new InvalidDataException("Tampering accepted: "+mode);
+        }
+        var verified=OnlinePackage.ExtractPending(store.Root,current,stage);
+        Check(verified.releaseId==args[3],"signed staging");store.Commit(stage,verified,"update");
+        Check(store.ReadState().active==args[3] && store.ReadState().previous==current.releaseId,"apply and recovery pointer");
+        Check(PackagePolicy.VerifyDirectory(store.PathFor(args[3])).appVersion==args[4],"installed integrity");
+        store.Rollback();Check(store.ReadState().active==current.releaseId,"rollback");
+        Check(File.ReadAllText(Path.Combine(store.Root,"synthetic-settings.txt"))=="settings" && File.ReadAllText(Path.Combine(store.Root,"synthetic-result.txt"))=="result","settings and results preserved");
+        Check(SignedUpdates.ReadHistory(File.ReadAllText(SignedUpdates.CachePath(store.Root))).sequence==long.Parse(args[5]),"anti-rollback history preserved");
+        Console.WriteLine("APPLY_CHECKS="+checks);return 0;
+    }
     static async Task<int> Main(string[] args){
+        if(args.Length>0 && args[0]=="apply-child")return ApplyChild(args);
         var old=PackagePolicy.VerifyDirectory(args[0]);var next=PackagePolicy.VerifyDirectory(args[1]);
         var registry=Json.Read<RepositoryRegistry>(File.ReadAllText(Path.Combine(args[0],"module-sources.json")));
         string envelope=File.ReadAllText(args[2]),previous=File.ReadAllText(args[3]);
@@ -59,46 +97,18 @@ static class PackageProbe {
             var pending=new PendingUpdate{id=id,fromRelease=old.releaseId,package=package,modules=signed.catalog.modules,signedEnvelope=envelope};
             string good=Json.Write(pending);File.WriteAllText(OnlinePackage.PendingPath(store.Root),good);
             pending.signedEnvelope=Json.Write(changed);File.WriteAllText(OnlinePackage.PendingPath(store.Root),Json.Write(pending));
-            Reject(()=>OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"bad-signature")),"pending signature tampering rejected");
+            Check(RunChild("signature",store.Root,next,signed.sequence).Contains("REJECTED=signature"),"pending signature tampering rejected");
             pending=Json.Read<PendingUpdate>(good);pending.package.sha256=new string('0',64);File.WriteAllText(OnlinePackage.PendingPath(store.Root),Json.Write(pending));
-            Reject(()=>OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"bad-package")),"pending package substitution rejected");
+            Check(RunChild("package",store.Root,next,signed.sequence).Contains("REJECTED=package"),"pending package substitution rejected");
             File.WriteAllText(OnlinePackage.PendingPath(store.Root),good);
             byte first;using(var f=new FileStream(download,FileMode.Open,FileAccess.ReadWrite)){first=(byte)f.ReadByte();f.Position=0;f.WriteByte((byte)(first^1));}
-            Reject(()=>OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"bad-bytes")),"download tampering rejected");
+            Check(RunChild("bytes",store.Root,next,signed.sequence).Contains("REJECTED=bytes"),"download tampering rejected");
             using(var f=new FileStream(download,FileMode.Open,FileAccess.Write)){f.WriteByte(first);}
-            string stage=Path.Combine(work,"stage");Release verified;
-            try { verified=OnlinePackage.ExtractPending(store.Root,old,stage); }
-            catch(InvalidDataException) {
-                var observed=Json.Read<PendingUpdate>(File.ReadAllText(OnlinePackage.PendingPath(store.Root)));
-                var approved=SignedUpdates.Verify(observed.signedEnvelope,File.ReadAllText(SignedUpdates.CachePath(store.Root)),DateTimeOffset.UtcNow).catalog;
-                var localRegistry=Json.Read<RepositoryRegistry>(File.ReadAllText(Path.Combine(store.PathFor(old.releaseId),"module-sources.json")));
-                var expected=OnlinePackage.Select(approved,old,localRegistry);
-                Console.WriteLine("DIAGNOSTIC pending package: "+Json.Write(observed.package));
-                Console.WriteLine("DIAGNOSTIC selected package: "+Json.Write(expected));
-                Console.WriteLine("DIAGNOSTIC exact download hash: "+PackagePolicy.HashFile(download));
-                for(int attempt=0;attempt<3;attempt++){
-                    try {
-                        var retried=OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"diagnostic-stage-"+attempt));
-                        Console.WriteLine("DIAGNOSTIC repeat "+attempt+": accepted "+retried.releaseId);
-                    } catch(InvalidDataException error) { Console.WriteLine("DIAGNOSTIC repeat "+attempt+": "+error.Message); }
-                }
-                string before=Json.Write(expected);
-                GC.Collect();GC.WaitForPendingFinalizers();GC.Collect();
-                typeof(PublishedPackage).GetProperty("sha256");
-                typeof(PublishedPackage).GetProperty("bytes");
-                string after=Json.Write(expected);
-                Console.WriteLine("DIAGNOSTIC order before: "+before);
-                Console.WriteLine("DIAGNOSTIC order after: "+after);
-                Console.WriteLine("DIAGNOSTIC same object serialization stable: "+(before==after));
-                throw;
-            }
-            Check(verified.releaseId==next.releaseId,"signed staging");store.Commit(stage,verified,"update");
-            Check(store.ReadState().active==next.releaseId && store.ReadState().previous==old.releaseId,"apply and recovery pointer");
-            Check(PackagePolicy.VerifyDirectory(store.PathFor(next.releaseId)).appVersion==next.appVersion,"installed integrity");
-            store.Rollback();Check(store.ReadState().active==old.releaseId,"rollback");
-            Check(File.ReadAllText(Path.Combine(store.Root,"synthetic-settings.txt"))=="settings" && File.ReadAllText(Path.Combine(store.Root,"synthetic-result.txt"))=="result","settings and results preserved");
-            Check(SignedUpdates.ReadHistory(File.ReadAllText(SignedUpdates.CachePath(store.Root))).sequence==signed.sequence,"anti-rollback history preserved");
+            string applied=RunChild("valid",store.Root,next,signed.sequence);
+            if(!applied.Contains("APPLY_CHECKS=6"))throw new InvalidDataException("Incomplete isolated apply checks");
+            checks+=6;
         }finally{Directory.Delete(work,true);}
         Console.WriteLine("CHECKS="+checks);return 0;
     }
 }
+

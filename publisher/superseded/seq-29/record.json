@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "version": "0.1.52",
+  "sequence": 29,
+  "payloadSha256": "b2daa49a56c399fa37d275e87cfec426d306be425e4844545c369108e43623b0",
+  "state": "superseded-before-publication",
+  "replacedByVersion": "0.1.54",
+  "replacedBySequence": 30,
+  "approvedAt": "2026-10-09T15:16:38+09:00",
+  "requestPreserved": "publisher/superseded/seq-29/request.json",
+  "originalPlanPreserved": "publisher/superseded/seq-29/plan.json",
+  "signaturePreserved": "publisher/inbox/seq-29-b2daa49a56c399fa37d275e87cfec426d306be425e4844545c369108e43623b0.signed.json",
+  "activeFeedUnchanged": true
+}
