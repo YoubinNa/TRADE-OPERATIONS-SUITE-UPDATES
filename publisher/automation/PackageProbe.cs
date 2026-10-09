@@ -66,7 +66,18 @@ static class PackageProbe {
             byte first;using(var f=new FileStream(download,FileMode.Open,FileAccess.ReadWrite)){first=(byte)f.ReadByte();f.Position=0;f.WriteByte((byte)(first^1));}
             Reject(()=>OnlinePackage.ExtractPending(store.Root,old,Path.Combine(work,"bad-bytes")),"download tampering rejected");
             using(var f=new FileStream(download,FileMode.Open,FileAccess.Write)){f.WriteByte(first);}
-            string stage=Path.Combine(work,"stage");var verified=OnlinePackage.ExtractPending(store.Root,old,stage);
+            string stage=Path.Combine(work,"stage");Release verified;
+            try { verified=OnlinePackage.ExtractPending(store.Root,old,stage); }
+            catch(InvalidDataException) {
+                var observed=Json.Read<PendingUpdate>(File.ReadAllText(OnlinePackage.PendingPath(store.Root)));
+                var approved=SignedUpdates.Verify(observed.signedEnvelope,File.ReadAllText(SignedUpdates.CachePath(store.Root)),DateTimeOffset.UtcNow).catalog;
+                var localRegistry=Json.Read<RepositoryRegistry>(File.ReadAllText(Path.Combine(store.PathFor(old.releaseId),"module-sources.json")));
+                var expected=OnlinePackage.Select(approved,old,localRegistry);
+                Console.WriteLine("DIAGNOSTIC pending package: "+Json.Write(observed.package));
+                Console.WriteLine("DIAGNOSTIC selected package: "+Json.Write(expected));
+                Console.WriteLine("DIAGNOSTIC exact download hash: "+PackagePolicy.HashFile(download));
+                throw;
+            }
             Check(verified.releaseId==next.releaseId,"signed staging");store.Commit(stage,verified,"update");
             Check(store.ReadState().active==next.releaseId && store.ReadState().previous==old.releaseId,"apply and recovery pointer");
             Check(PackagePolicy.VerifyDirectory(store.PathFor(next.releaseId)).appVersion==next.appVersion,"installed integrity");
