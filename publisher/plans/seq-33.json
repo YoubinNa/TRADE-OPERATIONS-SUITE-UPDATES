@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "enabled": true,
+  "enabled": false,
   "payloadSha256": "a92cea5bcee5968186c7bde064e9ae17931f419534a75377a64f5350cbe8b42c",
   "requiredActiveVersion": "0.1.56",
   "publicContentReviewed": true,
@@ -20,5 +20,10 @@
   "assetSha256": {
     "TRADE_OPERATIONS_SUITE_Master_v0.1.57.ecuss-update.zip": "321ae41ae224f0a11609c1cdcf1c09eba820ceaa3f7b735bb1314a9271195db6",
     "TRADE_OPERATIONS_SUITE_User_v0.1.57.ecuss-update.zip": "a812f1af55e3948d0d26e6122d8ab34c5728ea0f49b62a91ceb4995b47b28d77"
+  },
+  "supersededBy": {
+    "version": "0.1.58",
+    "sequence": 34,
+    "approvedAt": "2026-10-12T16:31:52+09:00"
   }
 }

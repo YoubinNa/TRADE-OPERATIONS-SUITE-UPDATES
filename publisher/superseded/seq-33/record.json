@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "version": "0.1.57",
+  "sequence": 33,
+  "payloadSha256": "a92cea5bcee5968186c7bde064e9ae17931f419534a75377a64f5350cbe8b42c",
+  "state": "superseded-before-publication",
+  "replacedByVersion": "0.1.58",
+  "replacedBySequence": 34,
+  "approvedAt": "2026-10-12T16:31:52+09:00",
+  "requestPreserved": "publisher/superseded/seq-33/request.json",
+  "originalPlanPreserved": "publisher/superseded/seq-33/plan.json",
+  "activeFeedUnchanged": true
+}
