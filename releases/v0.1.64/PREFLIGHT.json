@@ -1,0 +1,27 @@
+{
+  "schema": 2,
+  "version": "0.1.64",
+  "sequence": 39,
+  "packageCommit": "81f6b7888511448d538005430e1e42c978e79ff9",
+  "assetSha256": {
+    "TRADE_OPERATIONS_SUITE_Master_v0.1.64.ecuss-update.zip": "63b2b1745a9e3bfc8c2db9eb265eef524f4e6d9a75ac2b0f74cc5d04fc38302b",
+    "TRADE_OPERATIONS_SUITE_User_v0.1.64.ecuss-update.zip": "ef0fdff917bff41e6ad466d636163faa1f2302d756d4cf69ce41d98b21ff3b13"
+  },
+  "payloadSha256": "c072dab8b77f7a79643876c09f614cec5944b5855f5788b10d9cd8c96eb33e40",
+  "profiles": [
+    "master",
+    "user"
+  ],
+  "windowsPublicDownloadChecks": 28,
+  "anonymousSetupDownloads": 0,
+  "helperRequestChecks": 8,
+  "pairedModulesIdentical": true,
+  "publicationGateCompiledAgainstActualOldAndNew": true,
+  "productionSignaturePending": true,
+  "currentRequestActivated": true,
+  "stablePublished": false,
+  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/38657197874",
+  "preflightElapsedSeconds": 26.453,
+  "requestReadyAt": "2026-10-14T23:58:42.348945+00:00",
+  "masterReleaseApprovedAt": "2026-10-15T08:35:57+09:00"
+}
