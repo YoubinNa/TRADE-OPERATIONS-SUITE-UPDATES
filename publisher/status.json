@@ -1,8 +1,8 @@
 {
   "schema": 2,
   "state": "completed",
-  "version": "0.1.64",
-  "sequence": 39,
+  "version": "0.1.65",
+  "sequence": 40,
   "profiles": [
     "master",
     "user"
@@ -23,7 +23,7 @@
     "movingChannel": true,
     "anonymous": true,
     "attempts": 1,
-    "elapsedSeconds": 1.031
+    "elapsedSeconds": 0.89
   },
   "applyRollbackProfiles": [
     "master",
@@ -32,6 +32,6 @@
   "firstPublicInstallProfiles": [],
   "settingsAndResultsPreserved": true,
   "updateMode": "online",
-  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/38657470075",
+  "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/38665739448",
   "userPcVerified": false
 }
