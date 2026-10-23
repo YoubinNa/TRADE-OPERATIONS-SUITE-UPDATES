@@ -131,18 +131,8 @@
       },
       {
         "path": "packages/v0.1.89/transfer/master-015.bin",
-        "bytes": 1200000,
-        "sha256": "aaf7871afaad663df2c762960198a49105ed8c9ab1461acd7bc614ecdb544e22"
-      },
-      {
-        "path": "packages/v0.1.89/transfer/master-016.bin",
-        "bytes": 1200000,
-        "sha256": "aef6aed7dbbf8ecbeba46474686dcc4af8cdebd0203f86da3649b5063aefa00f"
-      },
-      {
-        "path": "packages/v0.1.89/transfer/master-017.bin",
-        "bytes": 371163,
-        "sha256": "4531994eb8d3e6eb5294ed2ce24cc256c6fc1070476502fccc219d194e036464"
+        "bytes": 2771163,
+        "sha256": "80099191f510dedebb331a43e3b3761ec20bee87291551a0d7df2eca50e8ada4"
       }
     ],
     "user": [
@@ -223,18 +213,8 @@
       },
       {
         "path": "packages/v0.1.89/transfer/user-015.bin",
-        "bytes": 1200000,
-        "sha256": "9c11e7bf476982f933390959b89fbbe7d7c12c5494ff7381180256f69e7ad39e"
-      },
-      {
-        "path": "packages/v0.1.89/transfer/user-016.bin",
-        "bytes": 1200000,
-        "sha256": "f35b55629137d979fb47c59154da8be2d5bc3d6607bfcd531127ccd87f580c55"
-      },
-      {
-        "path": "packages/v0.1.89/transfer/user-017.bin",
-        "bytes": 352010,
-        "sha256": "8d82e1588ba4e3ecf9bdac8af12c72f43b05d5cd753e1926b9e1823fa7893f1e"
+        "bytes": 2752010,
+        "sha256": "dc4167b6b089f3a30d8387db75ab5db0748a9fb140f008a1707d7f996b064e6e"
       }
     ]
   }
