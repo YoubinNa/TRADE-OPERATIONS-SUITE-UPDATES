@@ -1,0 +1,179 @@
+{
+  "schema": 1,
+  "version": "0.1.91",
+  "sequence": 64,
+  "requiredActiveVersion": "0.1.90",
+  "releaseStage": "beta",
+  "updateMode": "online",
+  "distributionMode": "update-only",
+  "packageTransport": "git-binary-parts",
+  "recordsBootstrapApproval": "https://iiiqtzisgjvbcxwmvchf.supabase.co",
+  "recordsBootstrapPolicy": "supabase-public",
+  "recordsBootstrapPublicConfigSha256": "95d3ed36c14501bb9842b4d2b3c86eed69f56a021fd142fe43ba225dbaa72add",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/39911250655"
+  ],
+  "assets": [
+    {
+      "profile": "master",
+      "path": "packages/v0.1.91/TRADE_OPERATIONS_SUITE_Master_v0.1.91.ecuss-update.zip",
+      "releaseId": "desktop-0.1.91-master-r20261023.1",
+      "bytes": 20771986,
+      "sha256": "bd89ff0409e01ce2194176ac20aec71a557ca80efd7a1438432ba2f2567aec83"
+    },
+    {
+      "profile": "user",
+      "path": "packages/v0.1.91/TRADE_OPERATIONS_SUITE_User_v0.1.91.ecuss-update.zip",
+      "releaseId": "desktop-0.1.91-user-r20261023.1",
+      "bytes": 20752856,
+      "sha256": "fa500364fc1350fa1fa4a65a95cb096002fe056230888a8291172466bcdd7406"
+    }
+  ],
+  "installers": [],
+  "removedModules": [],
+  "notes": [
+    "파일을 빠르게 드롭할 때 프로그램 창 표시가 취소되는 문제를 수정했습니다.",
+    "업로드 대상에 파일을 드래그할 때 다른 창에 가려진 프로그램 화면이 앞으로 표시되도록 보완했습니다.",
+    "기존 모듈의 업무 기준과 설정·인증·즐겨찾기·저장 자료를 보존합니다."
+  ],
+  "approval": {
+    "explicit": true,
+    "scope": "master-user-beta-release",
+    "approvedAt": "2026-10-23T06:39:32.327Z",
+    "version": "0.1.91",
+    "sequence": 64,
+    "assetSha256": {
+      "TRADE_OPERATIONS_SUITE_Master_v0.1.91.ecuss-update.zip": "bd89ff0409e01ce2194176ac20aec71a557ca80efd7a1438432ba2f2567aec83",
+      "TRADE_OPERATIONS_SUITE_User_v0.1.91.ecuss-update.zip": "fa500364fc1350fa1fa4a65a95cb096002fe056230888a8291172466bcdd7406"
+    },
+    "signingRequestExplicit": true
+  },
+  "binaryParts": {
+    "master": [
+      {
+        "path": "packages/v0.1.91/transfer/master-000.bin",
+        "bytes": 1800000,
+        "sha256": "eb7a64aaffb83215307a5db8244785882960ec0296aaa610d49dc787c035bcba"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-001.bin",
+        "bytes": 1800000,
+        "sha256": "62ad52b1c8e7d373cd6f35334ad9dd36bc80258b5124e58eab2519280db0118f"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-002.bin",
+        "bytes": 1800000,
+        "sha256": "234c5466a91d95150322e372342b6bc834e25d68e78a952a0b18aaf6f8726420"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-003.bin",
+        "bytes": 1800000,
+        "sha256": "2ce886d9cbf73bbcb290470906b57109d0a9b5b24fc99d9e77f9598797ea7854"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-004.bin",
+        "bytes": 1800000,
+        "sha256": "91d4bb1ff00ecc5f5d5c946ef6ae53fa465993cb42444781559a46a7652d7fc4"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-005.bin",
+        "bytes": 1800000,
+        "sha256": "42177b9a9c3ee074939672d082edb5cc025327502277939d67f360cd4a26bf24"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-006.bin",
+        "bytes": 1800000,
+        "sha256": "3e81c990eedcfd1e9ec73f5700e450536d2bd46031ea0e72571f81c799380e2c"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-007.bin",
+        "bytes": 1800000,
+        "sha256": "4310a2f0d4df3bbd343b2fe2886f03d9bd19131475851a2c20a29630508fb2cd"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-008.bin",
+        "bytes": 1800000,
+        "sha256": "3f31657af8f1d298943e9b989c5fe5bdc592ee9cbdfd7ccffcead31c867be775"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-009.bin",
+        "bytes": 1800000,
+        "sha256": "4edf6941281e7f5ce00eb41420081602b62ad55398c0b7629756eb939f43cca6"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-010.bin",
+        "bytes": 1800000,
+        "sha256": "52be2f2f240c3a47521927b1109d97b166ef80d3e29e09fe96abbab072a598a6"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/master-011.bin",
+        "bytes": 971986,
+        "sha256": "381e5663e0854ae9201bc06841f11d8d436d2883fb0bff0bc01e5042d97dbf2b"
+      }
+    ],
+    "user": [
+      {
+        "path": "packages/v0.1.91/transfer/user-000.bin",
+        "bytes": 1800000,
+        "sha256": "70d7bd8100bebc931209427ee7a328e62d64dfbdd02d2983a73e02ec04e0e50f"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-001.bin",
+        "bytes": 1800000,
+        "sha256": "fd1bca54f57be05cf50b8c3bd283c4eb9a09e599d972500f347ecffc1cdbd719"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-002.bin",
+        "bytes": 1800000,
+        "sha256": "1cf2ef41f56c267692beab05ff261615f4b3a9eb0f43a1c83bd22ef8e3570108"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-003.bin",
+        "bytes": 1800000,
+        "sha256": "218097e839bf9719f098689f4ad2664efe0540ee14c41f84473397bc10e20e23"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-004.bin",
+        "bytes": 1800000,
+        "sha256": "fa78976e3c7daee6639a51c0557191708f576b65aa5b6776b79b18f45a973bcf"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-005.bin",
+        "bytes": 1800000,
+        "sha256": "b84b43b41f4691f8bef5141b1f6b0cbf372b4c18b9effc0532d51227c43a63b5"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-006.bin",
+        "bytes": 1800000,
+        "sha256": "629061520d126217103acde9711664cb2676914d3a2175275304a4f08d7db80a"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-007.bin",
+        "bytes": 1800000,
+        "sha256": "34886a13c1e4c8512d07c1c0550cfd387ca24a9c27519940bf6819b9290f2d16"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-008.bin",
+        "bytes": 1800000,
+        "sha256": "8d3f3509188184dbaa1720794385fe19b951d36339577bcc4b2b4fc1ab807b52"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-009.bin",
+        "bytes": 1800000,
+        "sha256": "f928fe43a547327dc5bad6eb37148f6852557ddbedfb5dcb2f3e9da274bad5c1"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-010.bin",
+        "bytes": 1800000,
+        "sha256": "0b6f42a4eff1a1fdef7ee4cb3d0e5ba74ed74dd1901ba620b479d4db96ad0089"
+      },
+      {
+        "path": "packages/v0.1.91/transfer/user-011.bin",
+        "bytes": 952856,
+        "sha256": "2c7e7a5c9c34938f3c1b0edc110db1b3ea6a0f371b93696d911b83f43f9cbfd9"
+      }
+    ]
+  }
+}
