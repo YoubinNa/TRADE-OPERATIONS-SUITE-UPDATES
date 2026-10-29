@@ -336,5 +336,11 @@
         "sha256": "9c6bec87e24ae9c3a9f15e4a20d4bd37aaab66747f2c0d380be1f6333665a3f4"
       }
     ]
+  },
+  "transportValidation": {
+    "maxPackageBytes": 67108864,
+    "maxBinaryFragments": 40,
+    "exactPackageHashesPreserved": true,
+    "reason": "Approved v0.30 offline OCR assets exceed the earlier 16-fragment transport limit; package size and integrity gates remain enforced."
   }
 }

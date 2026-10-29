@@ -75,7 +75,10 @@ def restore_pair(s):
    target=ROOT/approved['path']
    if s['packageTransport']=='git-binary-parts':
     chunks=[];parts=s['binaryParts'][approved['profile']]
-    require(1<=len(parts)<=16,'Binary fragment count')
+    require(1<=len(parts)<=40,'Binary fragment count')
+    require(type(approved['bytes']) is int and 0<approved['bytes']<=64*1024*1024,'Binary package size')
+    require(all(type(p.get('bytes')) is int and 0<p['bytes']<=approved['bytes'] for p in parts),'Binary fragment size')
+    require(sum(p['bytes'] for p in parts)==approved['bytes'],'Binary fragment total')
     for i,part in enumerate(parts):
      require(part['path']==f"packages/v{s['version']}/transfer/{approved['profile']}-{i:03d}.bin",'Binary fragment path/order')
      chunk=(ROOT/part['path']).read_bytes()

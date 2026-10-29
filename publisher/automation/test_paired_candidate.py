@@ -64,6 +64,35 @@ class Pair(unittest.TestCase):
     spec['packageTransport']='git-binary'
     (root/assets[0]['path']).write_bytes(b'altered')
     with self.assertRaises(ValueError):paired_candidate.restore_pair(spec)
+
+ def test_large_binary_pair_and_fragment_bounds(self):
+  with tempfile.TemporaryDirectory() as folder:
+   root=Path(folder);assets=[];parts={}
+   for profile in ['master','user']:
+    target=root/f'packages/v0.1.41/TRADE_OPERATIONS_SUITE_{profile.title()}_v0.1.41.ecuss-update.zip';target.parent.mkdir(parents=True,exist_ok=True)
+    manifest=dict(appVersion='0.1.41',releaseId='desktop-0.1.41-'+profile+'-test',profile=profile,recordsBootstrap='initial-update',files=[])
+    with zipfile.ZipFile(target,'w') as z:z.writestr('manifest.json',json.dumps(manifest))
+    raw=target.read_bytes();assets.append(dict(profile=profile,path=target.relative_to(root).as_posix(),bytes=len(raw),sha256=sha(raw),releaseId=manifest['releaseId']));target.unlink()
+    parts[profile]=[]
+    for i in range(28):
+     chunk=raw[len(raw)*i//28:len(raw)*(i+1)//28];path=f"packages/v0.1.41/transfer/{profile}-{i:03d}.bin";p=root/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_bytes(chunk)
+     parts[profile].append(dict(path=path,bytes=len(chunk),sha256=sha(chunk)))
+   spec=dict(version='0.1.41',distributionMode='update-only',packageTransport='git-binary-parts',installers=[],assets=assets,binaryParts=parts,recordsBootstrapApproval='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS')
+   with patch.object(paired_candidate,'ROOT',root):
+    self.assertEqual(len(paired_candidate.restore_pair(spec)),2)
+    for mutation in ['too_many','empty','zero_size','wrong_total','oversize','tampered','wrong_hash']:
+     bad=copy.deepcopy(spec)
+     if mutation=='too_many':bad['binaryParts']['master']*=2
+     elif mutation=='empty':bad['binaryParts']['master']=[]
+     elif mutation=='zero_size':bad['binaryParts']['master'][0]['bytes']=0
+     elif mutation=='wrong_total':bad['binaryParts']['master'][0]['bytes']+=1
+     elif mutation=='oversize':bad['assets'][0]['bytes']=64*1024*1024+1
+     elif mutation=='wrong_hash':bad['assets'][0]['sha256']='0'*64
+     else:
+      first=root/parts['master'][0]['path'];saved=first.read_bytes();first.write_bytes(b'x'*len(saved))
+     with self.subTest(mutation=mutation),self.assertRaises(ValueError):paired_candidate.restore_pair(bad)
+     if mutation=='tampered':first.write_bytes(saved)
+
  def test_recurring_records_credentials(self):
   spec=dict(version='0.1.42',recordsBootstrapApproval='YoubinNa/TRADE-OPERATIONS-WORK-RECORDS',recordsBootstrapPolicy='every-update')
   manifest=dict(recordsBootstrap='every-update',recordsCredentialGeneration=1042)
