@@ -1,0 +1,23 @@
+{
+  "schema": 1,
+  "enabled": true,
+  "payloadSha256": "d5be01e8286077fb0ed00a96b9b723bb4ba18f9801df29a22647bb48dd8ca9bf",
+  "requiredActiveVersion": "0.1.95",
+  "publicContentReviewed": true,
+  "windowsCandidateVerified": true,
+  "candidateVerificationRuns": [
+    "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE/actions/runs/40814959162"
+  ],
+  "masterReleaseApprovedAt": "2026-10-29T04:04:52.524Z",
+  "updateMode": "online",
+  "scope": "Master/User same version, one approved Beta release",
+  "profiles": [
+    "master",
+    "user"
+  ],
+  "releaseStage": "beta",
+  "assetSha256": {
+    "TRADE_OPERATIONS_SUITE_Master_v0.1.96.ecuss-update.zip": "8d5f5027d48d73a76241e38cd56f18d1887a4d1b2b4c4ab654da08ffefd5ac69",
+    "TRADE_OPERATIONS_SUITE_User_v0.1.96.ecuss-update.zip": "e6a1484d65ea4138d29ce2b9322216b5fddb991751bb77a70a4d882d4642acc2"
+  }
+}
