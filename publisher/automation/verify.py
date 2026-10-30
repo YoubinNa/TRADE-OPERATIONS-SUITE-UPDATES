@@ -57,6 +57,9 @@ def catalog_identity(c):
         require(type(p['bytes']) is int and 0<p['bytes']<=64*1024*1024, 'Package size')
         require(p['path']==f"packages/v{c['appVersion']}/TRADE_OPERATIONS_SUITE_{p['profile'].title()}_v{c['appVersion']}.ecuss-update.zip", 'Unexpected package path')
         require(p['launcherApi']==4, 'Unsupported launcher API')
+        if p.get('fileUpdate') is not None:
+            f=p['fileUpdate']
+            require(isinstance(f,dict) and set(f)=={'schema','bytes','sha256'} and f['schema']==1 and type(f['bytes']) is int and 0<f['bytes']<=2097152 and re.fullmatch('[0-9a-f]{64}',f['sha256']), 'Invalid file index reference')
     if len(c['profiles'])==2:
         require(len({p['commit'] for p in c['packages']})==1, 'Paired packages require one immutable commit')
 
@@ -131,3 +134,4 @@ def archive(path, p, target=None):
             require(not target.exists(), 'Extraction destination exists')
             z.extractall(target)
     return m
+

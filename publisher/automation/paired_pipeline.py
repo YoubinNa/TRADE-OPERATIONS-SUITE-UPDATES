@@ -14,7 +14,7 @@ def prepare():
  c=r['payload']['catalog'];v=c['appVersion'];s=validate_pair(strict_json((ROOT/f'releases/v{v}/publish.json').read_bytes()))
  require(c['profiles']==['master','user'] and c.get('installers')==s['installers'] and c.get('releaseStage')==s['releaseStage'],'Paired signed scope changed')
  require(r['plan'].get('profiles')==['master','user'] and r['plan'].get('assetSha256')==asset_hashes(s),'Paired approval changed')
- for p,a in zip(c['packages'],s['assets']):require(all(p[k]==a[k] for k in ('profile','path','releaseId','bytes','sha256')),'Signed pair differs from reviewed bytes')
+ for p,a in zip(c['packages'],s['assets']):require(all(p[k]==a[k] for k in ('profile','path','releaseId','bytes','sha256')) and p.get('fileUpdate')==a.get('fileUpdate'),'Signed pair differs from reviewed bytes')
  manifests={}
  for label,payload in [('old',r['previousPayload']),('next',r['payload'])]:
   for p in payload['catalog']['packages']:
@@ -22,7 +22,7 @@ def prepare():
    require(len(raw)==p['bytes'] and sha(raw)==p['sha256'] and (ROOT/p['path']).read_bytes()==raw,'Immutable paired package changed')
    target=WORK/(label+'-'+p['profile']);manifests[label+'-'+p['profile']]=archive(ROOT/p['path'],p,target);registry_matches(target,payload['catalog'])
  compare_modules(manifests['next-master'],manifests['next-user'])
- state=dict(head=base.run('git','rev-parse','HEAD',cwd=ROOT),version=v,sequence=r['payload']['sequence'],requestSha256=sha(r['requestRaw']),envelopeSha256=sha(r['envelope']),resumed=r['resumed'],updateMode='online',profiles=['master','user'],releaseStage=s['releaseStage'],oldProfiles=r['previousPayload']['catalog']['profiles'])
+ state=dict(head=base.run('git','rev-parse','HEAD',cwd=ROOT),version=v,sequence=r['payload']['sequence'],requestSha256=sha(r['requestRaw']),envelopeSha256=sha(r['envelope']),resumed=r['resumed'],updateMode='online',profiles=['master','user'],releaseStage=s['releaseStage'],oldProfiles=r['previousPayload']['catalog']['profiles'],fileUpdates=all(p.get('fileUpdate') for p in c['packages']))
  base.write(WORK/'state.json',state);base.output('ready','true');base.output('version',v)
 
 def probe():
@@ -37,12 +37,21 @@ def probe():
   else:
    require(profile=='user','Master predecessor missing');exe=compile_probe(cc,WORK/'next-user',WORK/'gate-next-user','UserBootstrapProbe.cs')
    result=base.run(exe,WORK/'next-user',WORK/'candidate.json',WORK/'previous.json');print(result);require('CHECKS=15' in result,'User bootstrap gate incomplete');counts[profile]=15;downloads+=1
+ file_checks=0
+ if state.get('fileUpdates'):
+  for profile in ['master','user']:
+   exe=compile_probe(cc,WORK/('next-'+profile),WORK/('file-gate-'+profile),'FileUpdateProbe.cs')
+   result=base.run(exe,WORK/('old-'+profile),WORK/('next-'+profile),WORK/'candidate.json',WORK/'previous.json');print(result)
+   require('FILE_DOWNLOAD_CHECKS=9' in result and 'SIGNED_FILE_APPLY_CHECKS=5' in result,'Production signed file update/apply/rollback gate incomplete');file_checks+=14
+ state['fileUpdateChecks']=file_checks
  state.update(windowsChecksByProfile=counts,windowsChecks=sum(counts.values()),anonymousPackageDownloads=downloads,pairedModulesIdentical=True)
  base.write(WORK/'state.json',state)
 
 def require_gates(state):
  expected={p:(36 if p in state['oldProfiles'] else 15) for p in ['master','user']}
  require(state.get('windowsChecksByProfile')==expected and state.get('windowsChecks')==sum(expected.values()) and state.get('pairedModulesIdentical') is True,'Both profile gates required')
+
+ require(state.get('fileUpdateChecks',0)==(28 if state.get('fileUpdates') else 0),'Both signed file update gates required')
 
 def publish():
  state=strict_json((WORK/'state.json').read_bytes());require_gates(state);r=base.guard(state);v=state['version'];seq=state['sequence']
@@ -58,6 +67,7 @@ def finish():
  feed_checks=base.verify_public_feed(REPO,FEED,state['head'],r['envelope'],signature);v=state['version'];seq=state['sequence'];folder=f'publisher/publications/seq-{seq}';beta=state['releaseStage']=='beta'
  base.github('release','edit',f'v{v}','--prerelease='+str(beta).lower(),'--latest='+str(not beta).lower(),'--title',f'TRADE OPERATIONS SUITE — Master / User v{v}'+(' Beta' if beta else ''),'--notes-file',f'releases/v{v}/NOTES.md')
  release=strict_json(base.github('api',f'repos/{REPO}/releases/tags/v{v}'));require(release['prerelease']==beta,'Release stage changed');release_assets_match(release,strict_json((ROOT/f'releases/v{v}/publish.json').read_bytes()));base.guard(state)
- status=dict(schema=2,state='completed',version=v,sequence=seq,profiles=['master','user'],releaseStage=state['releaseStage'],oneSignedPayload=True,pairedModulesIdentical=True,windowsChecks=state['windowsChecks'],windowsChecksByProfile=state['windowsChecksByProfile'],productionSignatureVerified=True,anonymousPackageDownloads=state['anonymousPackageDownloads'],publicFeedVerified=True,publicFeedChecks=feed_checks,applyRollbackProfiles=state['oldProfiles'],firstPublicInstallProfiles=[p for p in ['master','user'] if p not in state['oldProfiles']],settingsAndResultsPreserved=True,updateMode='online',runUrl=os.environ['RUN_URL'],userPcVerified=False)
+ status=dict(schema=2,state='completed',version=v,sequence=seq,profiles=['master','user'],releaseStage=state['releaseStage'],oneSignedPayload=True,pairedModulesIdentical=True,windowsChecks=state['windowsChecks'],windowsChecksByProfile=state['windowsChecksByProfile'],productionSignatureVerified=True,fileUpdateChecks=state.get('fileUpdateChecks',0),anonymousFileUpdateProfiles=state['profiles'] if state.get('fileUpdates') else [],anonymousPackageDownloads=state['anonymousPackageDownloads'],publicFeedVerified=True,publicFeedChecks=feed_checks,applyRollbackProfiles=state['oldProfiles'],firstPublicInstallProfiles=[p for p in ['master','user'] if p not in state['oldProfiles']],settingsAndResultsPreserved=True,updateMode='online',runUrl=os.environ['RUN_URL'],userPcVerified=False)
  base.write(ROOT/folder/'status.json',status);base.write(ROOT/'publisher/status.json',status);base.write(ROOT/'publisher/current-request.json',dict(schema=1,product='TRADE-OPERATIONS-SUITE-PUBLISHER',channel='longterm',state='idle',lastPublishedVersion=v,lastPublishedSequence=seq,profiles=['master','user'],statusUrl=f'https://github.com/{REPO}/blob/main/publisher/status.json'))
  base.commit([folder,'publisher/status.json','publisher/current-request.json'],f'publisher: synchronized Master/User v{v} complete');print('COMPLETE: one signed payload, both profiles verified, one public feed activated.')
+

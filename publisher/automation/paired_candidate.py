@@ -10,7 +10,42 @@ def write(path,value):
  path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes((json.dumps(value,ensure_ascii=False,indent=2)+'\n').encode())
 def run(*args):
  result=subprocess.run([str(x) for x in args],cwd=ROOT,capture_output=True,text=True,encoding='utf-8');print(result.stdout);print(result.stderr);require(result.returncode==0,'Paired candidate command failed');return result.stdout.strip()
-def asset_hashes(s):return {Path(x['path']).name:x['sha256'] for x in s['assets']}|{x['name']:x['sha256'] for x in s['installers']}
+def sidecar_assets(s):
+ assets={}
+ for p in s['assets']:
+  for a in p.get('fileUpdateAssets',[]):
+   require(a['name'] not in assets or assets[a['name']]==a,'Conflicting shared file object')
+   assets[a['name']]=a
+ return assets
+def asset_hashes(s):
+ return {Path(x['path']).name:x['sha256'] for x in s['assets']}|{x['name']:x['sha256'] for x in s['installers']}|{n:a['sha256'] for n,a in sidecar_assets(s).items()}
+def validate_file_updates(s):
+ present=[p.get('fileUpdate') is not None for p in s['assets']]
+ require(all(present) or not any(present),'Both profiles need file update metadata')
+ if tuple(map(int,s['version'].split('.')))>=(0,1,101): require(all(present),'New releases require changed-file updates')
+ for p in s['assets']:
+  if p.get('fileUpdate') is None:
+   require(not p.get('fileUpdateAssets'),'Unexpected file objects');continue
+  f=p['fileUpdate'];require(isinstance(f,dict) and set(f)=={'schema','bytes','sha256'} and f['schema']==1 and type(f['bytes']) is int and 0<f['bytes']<=2097152 and re.fullmatch('[0-9a-f]{64}',f['sha256']),'File index reference')
+  assets=p.get('fileUpdateAssets');require(isinstance(assets,list) and 4<=len(assets)<=3001,'File object inventory required')
+  name=f"TRADE_OPERATIONS_SUITE_{p['profile'].title()}_v{s['version']}.files.json"
+  require(len({a['name'] for a in assets})==len(assets),'Duplicate file asset')
+  for a in assets:
+   require(set(a)=={'name','bytes','sha256'} and re.fullmatch('[0-9a-f]{64}',a['sha256']) and type(a['bytes']) is int and 0<a['bytes']<=67108864,'File asset metadata')
+   require(a['name']==name or a['name']=='ecuss-file-'+a['sha256']+'.gz','File asset name')
+  require(dict(name=name,bytes=f['bytes'],sha256=f['sha256']) in assets,'Approved index asset missing')
+ sidecar_assets(s)
+def restore_file_updates(s):
+ from file_updates import build
+ folder=Path(os.environ.get('RUNNER_TEMP',str(ROOT/'_candidate-temp')))/('file-updates-'+s['version']);outputs={}
+ for p in s['assets']:
+  if p.get('fileUpdate') is None:continue
+  reference,assets=build(ROOT/p['path'],folder)
+  require(reference==p['fileUpdate'] and assets==p['fileUpdateAssets'],'File objects differ from reviewed package')
+  for a in assets:outputs[a['name']]=folder/a['name']
+ return list(outputs.values())
+def package_catalog(s,commit):
+ return [dict({k:p[k] for k in ('profile','path','releaseId','bytes','sha256')}, **({'fileUpdate':p['fileUpdate']} if p.get('fileUpdate') else {}),repository=REPO,commit=commit,appVersion=s['version'],launcherApi=4) for p in s['assets']]
 def validate_pair(s):
  require(s.get('schema')==1 and re.fullmatch(r'0\.\d+\.\d+',s.get('version','')),'Paired version/schema')
  require(type(s.get('sequence')) is int and s['sequence']>0,'Paired sequence')
@@ -37,6 +72,7 @@ def validate_pair(s):
  for p in s['installers']:
   require(p['name']==f"TRADE_OPERATIONS_SUITE_{p['profile'].title()}_Setup_v{s['version']}.exe",'Installer name')
   require(re.fullmatch('[0-9a-f]{64}',p['sha256']) and type(p['bytes']) is int and 0<p['bytes']<=400*1024*1024,'Installer hash/size')
+ validate_file_updates(s)
  a=s.get('approval',{})
  require(a.get('explicit') is True and a.get('scope')=='master-user-beta-release' and bool(a.get('approvedAt')),'Explicit paired release approval required')
  require(a.get('version')==s['version'] and a.get('sequence')==s['sequence'] and a.get('assetSha256')==asset_hashes(s),'Approval belongs to other bytes')
@@ -120,7 +156,7 @@ def restore_pair(s):
   outputs.append(target)
  return outputs
 def release_assets_match(release,s):
- expected={Path(x['path']).name:(x['bytes'],x['sha256']) for x in s['assets']}|{x['name']:(x['bytes'],x['sha256']) for x in s['installers']}
+ expected={Path(x['path']).name:(x['bytes'],x['sha256']) for x in s['assets']}|{x['name']:(x['bytes'],x['sha256']) for x in s['installers']}|{n:(a['bytes'],a['sha256']) for n,a in sidecar_assets(s).items()}
  require(not release['draft'] and len(release['assets'])==len(expected),'All paired release assets required')
  for asset in release['assets']:
   require(asset['name'] in expected and (asset['size'],asset['digest'])==(expected[asset['name']][0],'sha256:'+expected[asset['name']][1]),'Paired release asset differs')
@@ -128,7 +164,7 @@ def stage_pair(s):
  from candidate import check_predecessor,check_slot,commit
  validate_pair(s);_,previous,_=signature((ROOT/'updates/stable-longterm.signed.json').read_bytes());check_predecessor(s,previous)
  saved=ROOT/f"publisher/requests/v{s['version']}.json";check_slot(strict_json((ROOT/'publisher/current-request.json').read_bytes()),strict_json(saved.read_bytes()) if saved.exists() else None)
- outputs=restore_pair(s);folder=ROOT/f"releases/v{s['version']}";write(folder/'publish.json',s)
+ outputs=restore_pair(s)+restore_file_updates(s);folder=ROOT/f"releases/v{s['version']}";write(folder/'publish.json',s)
  (folder/'NOTES.md').write_bytes(('\n'.join(['# Master / User v'+s['version']+' '+s['releaseStage'].title(),'']+['- '+n for n in s['notes']])+'\n').encode())
  commit([x['path'] for x in s['assets']]+[folder.relative_to(ROOT).as_posix()],f"release: stage audited paired v{s['version']} Beta")
  identity=folder/'package-identity.json'
@@ -159,7 +195,7 @@ def preflight_pair(s):
  from candidate import check_predecessor
  started=time.monotonic();require(os.name=='nt','Windows paired preflight required');work=Path(os.environ['RUNNER_TEMP'])/'paired-preflight';require(not work.exists(),'Fresh paired preflight');work.mkdir()
  _,old,_=signature((ROOT/'updates/stable-longterm.signed.json').read_bytes());check_predecessor(s,old)
- identity=strict_json((ROOT/f"releases/v{s['version']}/package-identity.json").read_bytes());packages=[dict(x,repository=REPO,commit=identity['commit'],appVersion=s['version'],launcherApi=4) for x in s['assets']]
+ identity=strict_json((ROOT/f"releases/v{s['version']}/package-identity.json").read_bytes());packages=package_catalog(s,identity['commit'])
  manifests={}
  for p in packages:manifests[p['profile']]=archive(ROOT/p['path'],p,work/('next-'+p['profile']))
  compare_modules(manifests['master'],manifests['user'])
@@ -176,6 +212,12 @@ def preflight_pair(s):
  for label in labels:
   exe=compile_probe(cc,work/label,work/('probe-'+label),'CandidateDownloadProbe.cs');require('Checks: 7;' in run(exe,work/label,work/'catalog.json'),'Paired public download probe incomplete')
   compile_probe(cc,work/label,work/('gate-'+label),'UserBootstrapProbe.cs' if label=='next-user' and 'user' not in old['catalog']['profiles'] else 'PackageProbe.cs')
+ file_checks=0
+ if any(p.get('fileUpdate') for p in packages):
+  for profile in ['master','user']:
+   exe=compile_probe(cc,work/('next-'+profile),work/('file-probe-'+profile),'FileUpdateProbe.cs')
+   result=run(exe,work/('old-'+profile),work/('next-'+profile),work/'catalog.json')
+   require('FILE_DOWNLOAD_CHECKS=9' in result,'Anonymous file update probe incomplete');file_checks+=9
  for setup in s['installers']:
   url=f"https://github.com/{REPO}/releases/download/v{s['version']}/{setup['name']}";dest=work/setup['name'];urllib.request.urlretrieve(url,dest);require(dest.stat().st_size==setup['bytes'] and sha(dest.read_bytes())==setup['sha256'],'Anonymous exact Setup download failed')
  payload=dict(schema=1,product='ECUSS.ValidationSuite',channel='stable',sequence=s['sequence'],issuedAt=datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.0000000+00:00'),expiresAt='2099-12-31T23:59:59.0000000+00:00',catalog=catalog)
@@ -187,15 +229,17 @@ def preflight_pair(s):
  with zipfile.ZipFile(ROOT/'publisher/assistant-v1.1.1/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1.zip') as z:z.extractall(work/'helper')
  helper=work/'helper/TRADE_OPERATIONS_SUITE_Master_Signing_Assistant_v1.1.1/Publisher.Core.psm1'
  require('HELPER_CHECKS=8' in run('powershell','-NoProfile','-File',ROOT/'publisher/automation/CheckPairedRequest.ps1',helper,work/'request.json',ROOT/'updates/stable-longterm.signed.json',work/'history',s['version'],s['sequence'],packages[0]['sha256'],packages[1]['sha256'],len(s['installers'])),'Existing helper rejects paired request')
- write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],windowsPublicDownloadChecks=7*len(labels),anonymousSetupDownloads=len(s['installers']),helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
+ write(saved,req);write(ROOT/f"releases/v{s['version']}/PREFLIGHT.json",dict(schema=2,version=s['version'],sequence=s['sequence'],packageCommit=packages[0]['commit'],assetSha256=asset_hashes(s),payloadSha256=sha(raw),profiles=['master','user'],windowsPublicDownloadChecks=7*len(labels),windowsFileDownloadChecks=file_checks,anonymousSetupDownloads=len(s['installers']),helperRequestChecks=8,pairedModulesIdentical=True,publicationGateCompiledAgainstActualOldAndNew=True,productionSignaturePending=True,currentRequestActivated=False,stablePublished=False,runUrl=os.environ['RUN_URL'],preflightElapsedSeconds=round(time.monotonic()-started,3)))
 def activation_pair(s,request,evidence,previous,current):
  from candidate import check_predecessor,check_slot
  validate_pair(s);check_predecessor(s,previous);check_slot(current,request);raw=base64.b64decode(request['payload'],validate=True)
  require(request['payloadSha256']==sha(raw)==evidence['payloadSha256'],'Paired checked payload differs');d=strict_json(raw);c=d['catalog'];catalog_identity(c)
  require(request['state']=='ready' and c['profiles']==['master','user'] and d['sequence']==s['sequence'] and c['appVersion']==s['version'],'Paired request identity')
  require(c.get('installers')==s['installers'] and c.get('releaseStage')==s['releaseStage'],'Paired Setup/stage identity')
- for p,a in zip(c['packages'],s['assets']):require(all(p[k]==a[k] for k in ['profile','path','releaseId','bytes','sha256']) and p['commit']==evidence['packageCommit'],'Paired approved package differs')
+ for p,a in zip(c['packages'],s['assets']):require(all(p[k]==a[k] for k in ['profile','path','releaseId','bytes','sha256']) and p['commit']==evidence['packageCommit'] and p.get('fileUpdate')==a.get('fileUpdate'),'Paired approved package differs')
  require(evidence['version']==s['version'] and evidence['sequence']==s['sequence'] and evidence['assetSha256']==asset_hashes(s),'Paired evidence identity')
  require(evidence.get('profiles')==['master','user'] and evidence.get('windowsPublicDownloadChecks')==7*(2+len(previous['catalog']['profiles'])) and evidence.get('anonymousSetupDownloads')==len(s['installers']) and evidence.get('helperRequestChecks')==8 and evidence.get('pairedModulesIdentical') is True and evidence.get('publicationGateCompiledAgainstActualOldAndNew') is True,'Paired Windows gates incomplete')
+ require(evidence.get('windowsFileDownloadChecks',0)==(18 if any(p.get('fileUpdate') for p in s['assets']) else 0),'Both file download gates required')
  return dict(schema=1,enabled=True,payloadSha256=sha(raw),requiredActiveVersion=s['requiredActiveVersion'],publicContentReviewed=True,windowsCandidateVerified=True,candidateVerificationRuns=s['candidateVerificationRuns'],masterReleaseApprovedAt=s['approval']['approvedAt'],updateMode='online',scope='Master/User same version, one approved Beta release',profiles=['master','user'],releaseStage=s['releaseStage'],assetSha256=asset_hashes(s))
+
 

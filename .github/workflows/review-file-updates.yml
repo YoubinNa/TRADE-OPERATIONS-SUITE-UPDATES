@@ -1,0 +1,22 @@
+name: Verify changed-file publication gates
+on:
+  push:
+    branches: [review/file-updates]
+    paths: [publisher/automation/**, .github/workflows/review-file-updates.yml]
+  pull_request:
+    paths: [publisher/automation/file_updates.py, publisher/automation/paired_candidate.py, publisher/automation/paired_pipeline.py, publisher/automation/verify.py, publisher/automation/test_file_updates.py]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          sparse-checkout: publisher/automation
+      - shell: pwsh
+        run: |
+          python -m unittest discover -s publisher/automation -p 'test_paired_candidate.py'
+          if ($LASTEXITCODE -ne 0) { throw 'Legacy paired gates failed' }
+          python -m unittest discover -s publisher/automation -p 'test_file_updates.py'
+          if ($LASTEXITCODE -ne 0) { throw 'File update gates failed' }
