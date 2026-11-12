@@ -1,0 +1,10 @@
+'use strict';
+const test=require('node:test'),assert=require('node:assert/strict'),crypto=require('node:crypto');
+const {authorize}=require('./execution-control-guard.cjs');
+const {reader}=require('./shared-control.cjs');
+const raw=Buffer.from('synthetic candidate');
+const control=()=>({schema:1,paused:false,releaseAuthorization:{candidateFileSha256:crypto.createHash('sha256').update(raw).digest('hex'),reference:'synthetic test',allowedStages:['public-stage','preflight']}});
+test('prepare approval cannot activate',async()=>{await authorize(raw,'preflight',control());await assert.rejects(authorize(raw,'activate',control()),/STAGE_NOT_AUTHORIZED/);});
+test('hold overrides stage approval',async()=>{await assert.rejects(authorize(raw,'preflight',{...control(),paused:true}),/DEPLOYMENT_PAUSED/);});
+test('candidate bytes are bound to stage approval',async()=>{await assert.rejects(authorize(Buffer.from('changed'),'preflight',control()),/STAGE_NOT_AUTHORIZED/);});
+test('missing private read credential fails before any HTTP',async()=>{let calls=0;await assert.rejects(reader('synthetic-job',null,async()=>{calls++;})(),/TOKEN_REQUIRED/);assert.equal(calls,0);});

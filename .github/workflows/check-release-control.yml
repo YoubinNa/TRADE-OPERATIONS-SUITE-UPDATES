@@ -1,0 +1,34 @@
+name: Check release phase controls without publication
+on:
+  push:
+    branches: [main]
+    paths: ['publisher/control/**', '.github/workflows/prepare-candidate.yml', '.github/workflows/check-release-control.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            publisher/automation
+            publisher/control
+            .github/workflows
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check candidate scope, hold and preserved preflight
+        run: |
+          node --test publisher/control/test-control.cjs
+          python -B publisher/control/test-preserve-preflight.py
+          python -m pip install --disable-pip-version-check --quiet PyYAML==6.0.3
+          python -B publisher/control/test-workflow.py
+      - name: Reuse existing approval and paired evidence gate tests
+        run: |
+          python -B publisher/automation/test_verify.py
+          python -B publisher/automation/test_release_speed.py
+          python -B publisher/automation/test_paired_candidate.py

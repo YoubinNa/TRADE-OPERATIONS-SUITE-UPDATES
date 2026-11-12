@@ -1,12 +1,16 @@
-name: Prepare approved synchronized candidate and send one signing request
+name: Prepare or activate an explicitly scoped synchronized candidate
 on:
-  push:
-    branches: [main]
-    paths: ['publisher/candidates/*.json']
   workflow_dispatch:
     inputs:
       candidate:
         description: Approved publisher/candidates/vX.Y.Z.json
+        required: true
+      operation:
+        type: choice
+        options: [prepare, stage, preflight, activate, full]
+        default: prepare
+      job_id:
+        description: Private shared execution control job ID
         required: true
 permissions:
   contents: write
@@ -20,6 +24,8 @@ jobs:
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
+      RELEASE_CONTROL_JOB_ID: ${{ inputs.job_id }}
+      RELEASE_CONTROL_TOKEN: ${{ secrets.RELEASE_CONTROL_TOKEN }}
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - shell: pwsh
@@ -28,35 +34,38 @@ jobs:
         with:
           fetch-depth: 0
           persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
       - name: Resolve one approved candidate
         id: spec
         shell: pwsh
         env:
           CANDIDATE: ${{ inputs.candidate }}
-          BEFORE: ${{ github.event.before }}
         run: |
-          if ($env:CANDIDATE) { $path = $env:CANDIDATE }
-          else {
-            $paths = @(git diff --name-only $env:BEFORE HEAD -- 'publisher/candidates/*.json')
-            if ($paths.Count -ne 1) { throw 'Exactly one approved candidate is required' }
-            $path = $paths[0]
-          }
+          $path = $env:CANDIDATE
           if ($path -notmatch '^publisher/candidates/v0\.\d+\.\d+\.json$') { throw 'Invalid candidate path' }
           "path=$path" >> $env:GITHUB_OUTPUT
       - name: Verify approval and stage immutable public bytes
+        if: contains(fromJSON('["prepare","stage","full"]'), inputs.operation)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
           SPEC: ${{ steps.spec.outputs.path }}
         run: |
+          node publisher/control/execution-control-guard.cjs $env:SPEC public-stage
+          if ($LASTEXITCODE -ne 0) { throw 'Staging held or not authorized' }
           gh auth setup-git
           python -B publisher/automation/candidate.py stage $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Candidate staging failed' }
       - name: Verify public download and installed signing helper
+        if: contains(fromJSON('["prepare","preflight","full"]'), inputs.operation)
         shell: pwsh
         env:
           SPEC: ${{ steps.spec.outputs.path }}
         run: |
+          node publisher/control/execution-control-guard.cjs $env:SPEC preflight
+          if ($LASTEXITCODE -ne 0) { throw 'Preflight held or not authorized' }
           python -B publisher/automation/test_verify.py
           if ($LASTEXITCODE -ne 0) { throw 'Publication gates failed' }
           python -B publisher/automation/test_release_speed.py
@@ -65,12 +74,35 @@ jobs:
           if ($LASTEXITCODE -ne 0) { throw 'Paired candidate gates failed' }
           python -B publisher/automation/preflight_candidate.py $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Windows preflight failed' }
-      - name: Send exact verified request under existing explicit approval
+      - name: Preserve exact preflight without activating the current request
+        if: contains(fromJSON('["prepare","preflight","full"]'), inputs.operation)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
           SPEC: ${{ steps.spec.outputs.path }}
         run: |
+          gh auth setup-git
+          python -B publisher/control/preserve-preflight.py $env:SPEC
+          if ($LASTEXITCODE -ne 0) { throw 'Preflight checkpoint failed; inspect before retry' }
+      - name: Send exact verified request under existing explicit approval
+        if: contains(fromJSON('["activate","full"]'), inputs.operation)
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SPEC: ${{ steps.spec.outputs.path }}
+        run: |
+          node publisher/control/execution-control-guard.cjs $env:SPEC activate
+          if ($LASTEXITCODE -ne 0) { throw 'Request activation held or not authorized' }
+          gh auth setup-git
           python -B publisher/automation/candidate.py activate $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Request activation failed; no force push' }
           'Approved candidate passed Windows preflight; signing request is ready. Signing and automatic publication remain separate.' >> $env:GITHUB_STEP_SUMMARY
+      - name: Preserve preflight diagnostics
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: public-preflight-${{ github.run_id }}-${{ github.run_attempt }}
+          path: |
+            releases/*/PREFLIGHT.json
+          if-no-files-found: ignore
+          retention-days: 30
