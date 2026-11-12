@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "paused": false,
+  "paused": true,
   "releaseAuthorization": {
     "candidateFileSha256": "b148b73600c827ac5f36c3ddcccd32faba37150c55d439653771448def108a7e",
     "reference": "Master approved exact v0.1.116 Master/User sequence 89 signing-request activation and automatic publication after user signing on 2026-11-12.",
