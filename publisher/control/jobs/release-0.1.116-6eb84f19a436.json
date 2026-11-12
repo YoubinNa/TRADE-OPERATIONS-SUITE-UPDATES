@@ -1,12 +1,12 @@
 {
   "schema": 1,
-  "paused": true,
+  "paused": false,
   "releaseAuthorization": {
-    "candidateFileSha256": "968d52979a42d0c6c396bfc1820a72f820fd5d6f17bf49b735f264785d7b2f84",
-    "reference": "Approved exact v0.1.116 pair preparation only; signing request activation and publication remain on hold.",
+    "candidateFileSha256": "b148b73600c827ac5f36c3ddcccd32faba37150c55d439653771448def108a7e",
+    "reference": "Master approved exact v0.1.116 Master/User sequence 89 signing-request activation and automatic publication after user signing on 2026-11-12.",
     "allowedStages": [
-      "public-stage",
-      "preflight"
+      "activate",
+      "publish"
     ]
   }
 }

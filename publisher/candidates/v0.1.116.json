@@ -1545,15 +1545,15 @@
   "approval": {
     "explicit": true,
     "scope": "master-user-beta-release",
-    "approvedAt": "2026-11-12T09:15:32.045Z",
+    "approvedAt": "2026-11-12T09:48:41.498Z",
     "version": "0.1.116",
     "sequence": 89,
-    "signingRequestExplicit": false,
+    "signingRequestExplicit": true,
     "destinationRepository": "YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES",
-    "authorizationBasis": "Exact paired candidate approved for public staging and preflight only. Request activation and publication remain on hold.",
+    "authorizationBasis": "Master explicitly approved activation of this verified v0.1.116 paired signing request and automatic publication after user signing on 2026-11-12.",
     "allowedStages": [
-      "public-stage",
-      "preflight"
+      "activate",
+      "publish"
     ],
     "assetSha256": {
       "TRADE_OPERATIONS_SUITE_Master_v0.1.116.ecuss-update.zip": "b0f92e9d483382390e9e20b00e63fc44bd6f8316004f41baa0fe567ba28500ae",
@@ -1722,7 +1722,8 @@
       "ecuss-file-b21b5cd12f79f8c560b71c51c3f9c95b216ab01fd2fddcf3f412219ce8237dc6.gz": "b21b5cd12f79f8c560b71c51c3f9c95b216ab01fd2fddcf3f412219ce8237dc6",
       "ecuss-file-d38bc5d766ccf6e235f3285f43853a5b174d94e9de31431168f709ab8e1470e2.gz": "d38bc5d766ccf6e235f3285f43853a5b174d94e9de31431168f709ab8e1470e2",
       "ecuss-file-ef8d330e8cb03f615ad7333437a9954b20ae177f076940487b87a6ff7c8d25a7.gz": "ef8d330e8cb03f615ad7333437a9954b20ae177f076940487b87a6ff7c8d25a7"
-    }
+    },
+    "preparationApprovedAt": "2026-11-12T09:15:32.045Z"
   },
   "binaryParts": {
     "master": [
