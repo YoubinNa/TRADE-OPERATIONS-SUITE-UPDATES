@@ -1,13 +1,12 @@
 'use strict';
-// Optional CI-only read of shared hold before each mutation. No remote writes.
+// Public operational hold, read with GitHub's built-in token or anonymously. No private credential.
 function reader(jobId,token,fetchImpl=fetch){
   if(!/^[a-zA-Z0-9._-]{1,120}$/.test(jobId))throw Error('INVALID_JOB_ID');
   return async()=>{
-    if(!token)throw Error('SHARED_CONTROL_TOKEN_REQUIRED');
     let r;
-    try{r=await fetchImpl('https://api.github.com/repos/YoubinNa/TRADE-OPERATIONS-SUITE/contents/tools/release/jobs/'+jobId+'/control.json?ref=main',{
+    try{r=await fetchImpl('https://api.github.com/repos/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/contents/publisher/control/jobs/'+jobId+'.json?ref=main',{
       redirect:'error',signal:AbortSignal.timeout(15000),
-      headers:{Accept:'application/vnd.github+json',Authorization:'Bearer '+token,'Cache-Control':'no-cache'}
+      headers:{Accept:'application/vnd.github+json',...(token?{Authorization:'Bearer '+token}:{}),'Cache-Control':'no-cache'}
     });}catch{throw Error('SHARED_CONTROL_UNAVAILABLE');}
     if(!r.ok)throw Error('SHARED_CONTROL_UNAVAILABLE');
     const data=await r.json();

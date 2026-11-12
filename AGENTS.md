@@ -22,7 +22,10 @@
 - Prioritize completing the approved update-to-publication work within one conversation by reducing elapsed time and repeated output. Resume is a fallback.
 - Reuse the existing candidate.py, preflight_candidate.py, signing helper and verified paired bytes. Do not rebuild an unchanged pair or repeat unchanged app tests for documentation/control-only changes.
 - Use prepare-candidate.yml explicit operations. Default prepare stages and verifies only; activate/full require the exact candidate's stage authorization. Saving a candidate file no longer automatically sends a signing request.
-- Read shared execution control before each workflow stage. Missing credentials, unavailable control, paused state or a candidate digest mismatch must fail closed. A procedure/code change does not lift the user's deployment hold.
+- Read shared execution control before each workflow stage. Unavailable control, paused state or a candidate digest mismatch must fail closed. A procedure/code change does not lift the user's deployment hold.
 - Preserve verified request/evidence for separate activation without changing current-request.json. Never equate a stored request file with an activated signing request.
 - Print compact phase results; inspect only failed steps. Keep private plans, credentials, runtime logs and business data out of this public repository.
 - Keep existing automatic publication after an approved signature is delivered; do not require another chat acknowledgement. Current user holds still take precedence. See publisher/control/README.md.
+
+- Reuse the existing ChatGPT GitHub connection for transfer and the built-in github.token for this repository's preparation workflow. Do not ask the user to register new secrets solely for these paths.
+- Read publisher/control/jobs/<jobId>.json for the common operational hold. Store only public stage authorization metadata there; private transfer approval and execution records stay private.

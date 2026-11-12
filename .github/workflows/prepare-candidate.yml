@@ -10,7 +10,7 @@ on:
         options: [prepare, stage, preflight, activate, full]
         default: prepare
       job_id:
-        description: Private shared execution control job ID
+        description: Public shared hold job ID
         required: true
 permissions:
   contents: write
@@ -25,7 +25,7 @@ jobs:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
       RELEASE_CONTROL_JOB_ID: ${{ inputs.job_id }}
-      RELEASE_CONTROL_TOKEN: ${{ secrets.RELEASE_CONTROL_TOKEN }}
+      RELEASE_CONTROL_TOKEN: ${{ github.token }}
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - shell: pwsh

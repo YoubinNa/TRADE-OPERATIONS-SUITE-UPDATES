@@ -31,3 +31,9 @@ jobs:
         run: |
           python -B publisher/automation/test_release_speed.py
           python -B publisher/automation/test_paired_candidate.py
+
+      - name: Read operational hold with built-in repository authorization
+        env:
+          CONTROL_TOKEN: ${{ github.token }}
+        run: |
+          node -e "require('./publisher/control/shared-control.cjs').reader('release-0.1.116-6eb84f19a436',process.env.CONTROL_TOKEN)().then(c=>{console.log(JSON.stringify({controlReadable:c.schema===1,paused:c.paused!==false,customSecretRequired:false,remoteWrites:0}));}).catch(()=>{console.error('PUBLIC_HOLD_READ_FAILED');process.exitCode=1;});"

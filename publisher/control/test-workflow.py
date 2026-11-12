@@ -18,3 +18,7 @@ assert 'gh auth setup-git' in activation['run']
 for name in ['test_verify.py','test_release_speed.py','test_paired_candidate.py','preflight_candidate.py']:
     assert name in next(s for s in steps if s.get('name','').startswith('Verify public'))['run']
 print('Public workflow contracts passed; no live stage executed')
+
+assert data['jobs']['candidate']['env']['RELEASE_CONTROL_TOKEN']=='${{ github.token }}'
+assert 'secrets.RELEASE_CONTROL_TOKEN' not in Path('.github/workflows/prepare-candidate.yml').read_text()
+assert 'TRADE-OPERATIONS-SUITE-UPDATES/contents/publisher/control/jobs/' in Path('publisher/control/shared-control.cjs').read_text()
