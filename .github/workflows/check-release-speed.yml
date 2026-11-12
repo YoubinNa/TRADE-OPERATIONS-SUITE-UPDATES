@@ -9,8 +9,7 @@ on:
       - 'publisher/automation/CheckCandidateRequest.ps1'
       - 'publisher/automation/test_release_speed.py'
       - 'publisher/automation/check_candidate_replay.py'
-      - '.github/workflows/check-release-speed.yml'
-      - '.github/workflows/prepare-candidate.yml'
+  workflow_dispatch:
 permissions:
   contents: read
 jobs:

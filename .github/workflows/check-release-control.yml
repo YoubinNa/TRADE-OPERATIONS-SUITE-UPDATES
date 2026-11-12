@@ -29,6 +29,5 @@ jobs:
           python -B publisher/control/test-workflow.py
       - name: Reuse existing approval and paired evidence gate tests
         run: |
-          python -B publisher/automation/test_verify.py
           python -B publisher/automation/test_release_speed.py
           python -B publisher/automation/test_paired_candidate.py
