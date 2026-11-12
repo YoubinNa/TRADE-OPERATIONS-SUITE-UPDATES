@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "paused": false,
+  "paused": true,
   "releaseAuthorization": {
     "candidateFileSha256": "968d52979a42d0c6c396bfc1820a72f820fd5d6f17bf49b735f264785d7b2f84",
     "reference": "Approved exact v0.1.116 pair preparation only; signing request activation and publication remain on hold.",
