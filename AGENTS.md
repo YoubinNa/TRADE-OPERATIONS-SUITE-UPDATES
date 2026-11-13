@@ -21,7 +21,7 @@
 ## Efficient release execution
 - Prioritize completing the approved update-to-publication work within one conversation by reducing elapsed time and repeated output. Resume is a fallback.
 - Reuse the existing candidate.py, preflight_candidate.py, signing helper and verified paired bytes. Do not rebuild an unchanged pair or repeat unchanged app tests for documentation/control-only changes.
-- Use prepare-candidate.yml explicit operations. Default prepare stages and verifies only; activate/full require the exact candidate's stage authorization. Saving a candidate file no longer automatically sends a signing request.
+- Start prepare-candidate.yml through one new immutable publisher/execution-requests/<request_id>.json pushed by the existing GitHub connector; keep manual dispatch as fallback. The request binds exact candidate SHA-256, job_id and operation. Default prepare stages and verifies only; activate/full require the exact candidate stage authorization. Saving a candidate file alone never starts a signing request. inspect is read-only and skips the Windows execution job.
 - Read shared execution control before each workflow stage. Unavailable control, paused state or a candidate digest mismatch must fail closed. A procedure/code change does not lift the user's deployment hold.
 - Preserve verified request/evidence for separate activation without changing current-request.json. Never equate a stored request file with an activated signing request.
 - Print compact phase results; inspect only failed steps. Keep private plans, credentials, runtime logs and business data out of this public repository.

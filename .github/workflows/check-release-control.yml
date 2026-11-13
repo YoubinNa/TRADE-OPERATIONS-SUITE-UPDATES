@@ -1,7 +1,7 @@
 name: Check release phase controls without publication
 on:
   push:
-    branches: [main]
+    branches: [main, review/connector-trigger-20261113]
     paths: ['publisher/control/**', '.github/workflows/prepare-candidate.yml', '.github/workflows/check-release-control.yml']
   workflow_dispatch:
 permissions:
@@ -23,7 +23,7 @@ jobs:
           node-version: '22'
       - name: Check candidate scope, hold and preserved preflight
         run: |
-          node --test publisher/control/test-control.cjs
+          node --test publisher/control/test-control.cjs publisher/control/test-execution-request.cjs
           python -B publisher/control/test-preserve-preflight.py
           python -m pip install --disable-pip-version-check --quiet PyYAML==6.0.3
           python -B publisher/control/test-workflow.py

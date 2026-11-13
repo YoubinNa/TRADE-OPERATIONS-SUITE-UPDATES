@@ -1,5 +1,8 @@
 name: Prepare or activate an explicitly scoped synchronized candidate
 on:
+  push:
+    branches: [main]
+    paths: ['publisher/execution-requests/*.json']
   workflow_dispatch:
     inputs:
       candidate:
@@ -7,7 +10,7 @@ on:
         required: true
       operation:
         type: choice
-        options: [prepare, stage, preflight, activate, full]
+        options: [prepare, stage, preflight, activate, full, inspect]
         default: prepare
       job_id:
         description: Public shared hold job ID
@@ -18,13 +21,45 @@ concurrency:
   group: master-longterm-publication
   cancel-in-progress: false
 jobs:
+  resolve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    outputs:
+      candidate: ${{ steps.scope.outputs.candidate }}
+      operation: ${{ steps.scope.outputs.operation }}
+      job_id: ${{ steps.scope.outputs.job_id }}
+    steps:
+      - uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          fetch-depth: 0
+          filter: blob:none
+          persist-credentials: false
+          sparse-checkout: |
+            publisher/control
+            publisher/candidates
+            publisher/execution-requests
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Resolve immutable execution request and current authorization
+        id: scope
+        env:
+          INPUT_CANDIDATE: ${{ inputs.candidate }}
+          INPUT_OPERATION: ${{ inputs.operation }}
+          INPUT_JOB_ID: ${{ inputs.job_id }}
+          RELEASE_CONTROL_TOKEN: ${{ github.token }}
+        run: node publisher/control/resolve-execution.cjs
   candidate:
+    needs: resolve
+    if: needs.resolve.outputs.operation != 'inspect'
     runs-on: windows-2022
     timeout-minutes: 25
     env:
       PYTHONUTF8: '1'
       PYTHONIOENCODING: utf-8
-      RELEASE_CONTROL_JOB_ID: ${{ inputs.job_id }}
+      RELEASE_CONTROL_JOB_ID: ${{ needs.resolve.outputs.job_id }}
       RELEASE_CONTROL_TOKEN: ${{ github.token }}
       RUN_URL: https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
@@ -37,21 +72,12 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Resolve one approved candidate
-        id: spec
-        shell: pwsh
-        env:
-          CANDIDATE: ${{ inputs.candidate }}
-        run: |
-          $path = $env:CANDIDATE
-          if ($path -notmatch '^publisher/candidates/v0\.\d+\.\d+\.json$') { throw 'Invalid candidate path' }
-          "path=$path" >> $env:GITHUB_OUTPUT
       - name: Verify approval and stage immutable public bytes
-        if: contains(fromJSON('["prepare","stage","full"]'), inputs.operation)
+        if: contains(fromJSON('["prepare","stage","full"]'), needs.resolve.outputs.operation)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-          SPEC: ${{ steps.spec.outputs.path }}
+          SPEC: ${{ needs.resolve.outputs.candidate }}
         run: |
           node publisher/control/execution-control-guard.cjs $env:SPEC public-stage
           if ($LASTEXITCODE -ne 0) { throw 'Staging held or not authorized' }
@@ -59,10 +85,10 @@ jobs:
           python -B publisher/automation/candidate.py stage $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Candidate staging failed' }
       - name: Verify public download and installed signing helper
-        if: contains(fromJSON('["prepare","preflight","full"]'), inputs.operation)
+        if: contains(fromJSON('["prepare","preflight","full"]'), needs.resolve.outputs.operation)
         shell: pwsh
         env:
-          SPEC: ${{ steps.spec.outputs.path }}
+          SPEC: ${{ needs.resolve.outputs.candidate }}
         run: |
           node publisher/control/execution-control-guard.cjs $env:SPEC preflight
           if ($LASTEXITCODE -ne 0) { throw 'Preflight held or not authorized' }
@@ -75,21 +101,21 @@ jobs:
           python -B publisher/automation/preflight_candidate.py $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Windows preflight failed' }
       - name: Preserve exact preflight without activating the current request
-        if: contains(fromJSON('["prepare","preflight","full"]'), inputs.operation)
+        if: contains(fromJSON('["prepare","preflight","full"]'), needs.resolve.outputs.operation)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-          SPEC: ${{ steps.spec.outputs.path }}
+          SPEC: ${{ needs.resolve.outputs.candidate }}
         run: |
           gh auth setup-git
           python -B publisher/control/preserve-preflight.py $env:SPEC
           if ($LASTEXITCODE -ne 0) { throw 'Preflight checkpoint failed; inspect before retry' }
       - name: Send exact verified request under existing explicit approval
-        if: contains(fromJSON('["activate","full"]'), inputs.operation)
+        if: contains(fromJSON('["activate","full"]'), needs.resolve.outputs.operation)
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
-          SPEC: ${{ steps.spec.outputs.path }}
+          SPEC: ${{ needs.resolve.outputs.candidate }}
         run: |
           node publisher/control/execution-control-guard.cjs $env:SPEC activate
           if ($LASTEXITCODE -ne 0) { throw 'Request activation held or not authorized' }
