@@ -2,11 +2,32 @@
   "schema": 1,
   "planSha256": "7b7fb260a11c1dba9ee07c79b3c46024bb89bea7c0a23903fc86e1ba8ca3280d",
   "sourceCommit": "a697ecf9b702806d7908d97889c373eae67fcd3f",
-  "previousHead": "2091e3c6d652d1db3c4525b02707dcb71087fc59",
+  "previousHead": "d8aaa9b6f33a06a7a16fbb54ef9f4eebe5d42142",
   "stage": "transfer-incomplete",
-  "present": 38,
+  "present": 42,
   "total": 60,
+  "committedPaths": [
+    {
+      "path": "packages/v0.1.117/transfer/master-000.bin",
+      "sha": "22f036a64066e192cdba0b7cdcc20f97f643e6de",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.117/transfer/master-001.bin",
+      "sha": "2f719f485c19f990ea6bee165045e143767c46b5",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.117/transfer/master-002.bin",
+      "sha": "b9d0a628d859fd97d4b7b5d98f5339dd21575782",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.117/transfer/master-003.bin",
+      "sha": "2bc31eac5d2156f2e1c7faa43f0433d0787ebee3",
+      "size": 1800000
+    }
+  ],
   "archiveVerified": false,
-  "signingRequestSent": false,
-  "reusedExistingBlobs": 38
+  "signingRequestSent": false
 }
