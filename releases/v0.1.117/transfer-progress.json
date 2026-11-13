@@ -1,0 +1,12 @@
+{
+  "schema": 1,
+  "planSha256": "7b7fb260a11c1dba9ee07c79b3c46024bb89bea7c0a23903fc86e1ba8ca3280d",
+  "sourceCommit": "a697ecf9b702806d7908d97889c373eae67fcd3f",
+  "previousHead": "2091e3c6d652d1db3c4525b02707dcb71087fc59",
+  "stage": "transfer-incomplete",
+  "present": 38,
+  "total": 60,
+  "archiveVerified": false,
+  "signingRequestSent": false,
+  "reusedExistingBlobs": 38
+}
