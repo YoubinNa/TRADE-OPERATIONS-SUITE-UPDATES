@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "request_id": "inspect-connector-20261113",
+  "candidate": "publisher/candidates/v0.1.118.json",
+  "candidate_sha256": "20f0d980605dda57056b39be41d054d1207faeec804392ef914fcc1c6390b754",
+  "operation": "inspect",
+  "job_id": "release-0.1.118-09acf8471bc4"
+}
