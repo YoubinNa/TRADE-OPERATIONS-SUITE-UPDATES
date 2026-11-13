@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "paused": false,
+  "paused": true,
   "releaseAuthorization": {
     "candidateFileSha256": "38af71ae704cd9bd8d14da6c466c76f25f51966a66ca43a2b9bb9cc7251aa257",
     "reference": "Master requested deployment of verified v0.1.117 pair on 2026-11-13.",
