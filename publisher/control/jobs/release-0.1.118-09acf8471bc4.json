@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "20f0d980605dda57056b39be41d054d1207faeec804392ef914fcc1c6390b754",
+    "reference": "Master explicitly approved v0.1.118 paired update through deployment on 2026-11-13.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
