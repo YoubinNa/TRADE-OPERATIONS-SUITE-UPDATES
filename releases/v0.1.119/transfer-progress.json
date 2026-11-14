@@ -1,0 +1,10 @@
+{
+  "schema": 1,
+  "planSha256": "9e285a27da827d07049785afaa59ed76cb392a802284c21c12fb2b3792dd9246",
+  "sourceCommit": "da0cb33a027e902334e86de2f7e0318f65e55058",
+  "stage": "transfer-incomplete",
+  "present": 50,
+  "total": 60,
+  "archiveVerified": false,
+  "signingRequestSent": false
+}
