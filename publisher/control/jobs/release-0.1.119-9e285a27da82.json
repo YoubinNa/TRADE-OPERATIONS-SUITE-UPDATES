@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "4951c2918d6f8a1468334ebf6a78afc87b52237144873ed422ee035a15b80fa8",
+    "reference": "Master approved v0.1.119 paired dashboard-only correction through update deployment on 2026-11-14.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
