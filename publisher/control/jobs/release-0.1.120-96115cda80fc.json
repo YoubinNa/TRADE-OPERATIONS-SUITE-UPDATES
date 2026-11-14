@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "36bf2da33dde3e0e69064f976b5b5518e39880ead094c3a9a251e700d3077574",
+    "reference": "Master instruction on 2026-11-14: verify integrated file save and Excel recalculation, then perform formal paired build, signing and deployment for approved stock-gap 0.3.0 commit b8d44160bfcc99068d2e19901cf0abf1de2b0f59.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
