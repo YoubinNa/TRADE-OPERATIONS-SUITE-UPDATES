@@ -1,0 +1,33 @@
+{
+  "schema": 1,
+  "planSha256": "83cb68ba03b9852a92c2c4257e5bd2e2aa5ec9c163ab2c2ce790be2745fce6ce",
+  "sourceCommit": "b1f2c252c8bccedae984bfc28752f24df0b22f87",
+  "previousHead": "9a6143fc06b780920dd5373ca62e6725189aaa2a",
+  "stage": "transfer-incomplete",
+  "present": 58,
+  "total": 66,
+  "committedPaths": [
+    {
+      "path": "packages/v0.1.121/transfer/master-000.bin",
+      "sha": "08842224cb6df2e7eb57a7581e06963bc494afb6",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.121/transfer/master-001.bin",
+      "sha": "695edb8ae4dd623452896f56ede3d09300616476",
+      "size": 1227
+    },
+    {
+      "path": "packages/v0.1.121/transfer/master-008.bin",
+      "sha": "9d57dbef34a48bd6a5a7528281da5a8034c07b25",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.121/transfer/master-009.bin",
+      "sha": "a94ba5960173fd67dfe92813320fc2bd2007743d",
+      "size": 1800000
+    }
+  ],
+  "archiveVerified": false,
+  "signingRequestSent": false
+}
