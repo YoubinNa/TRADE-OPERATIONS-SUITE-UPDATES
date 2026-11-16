@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "675f606b596d641c2616745798172826d8999cec85b91872566772387c8ee037",
+    "reference": "Master approval on 2026-11-16: formally deploy and request signing for the merged New Liquidation Review 1.1.5 update, using the existing GitHub connector automation.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
