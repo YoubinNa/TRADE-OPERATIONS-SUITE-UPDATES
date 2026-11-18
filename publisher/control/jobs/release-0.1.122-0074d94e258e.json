@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "325911231b9a88b1625046059dedb641c6148925ec5380da222e0c697cc5c332",
+    "reference": "Master approved the v0.1.122 paired container simulator update, the signing request and joint publication after signature on 2026-11-18.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
