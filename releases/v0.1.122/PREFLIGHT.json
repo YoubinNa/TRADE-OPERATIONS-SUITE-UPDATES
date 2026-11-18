@@ -200,8 +200,10 @@
   "pairedModulesIdentical": true,
   "publicationGateCompiledAgainstActualOldAndNew": true,
   "productionSignaturePending": true,
-  "currentRequestActivated": false,
+  "currentRequestActivated": true,
   "stablePublished": false,
   "runUrl": "https://github.com/YoubinNa/TRADE-OPERATIONS-SUITE-UPDATES/actions/runs/44285197905",
-  "preflightElapsedSeconds": 35.578
+  "preflightElapsedSeconds": 35.578,
+  "requestReadyAt": "2026-11-18T10:27:48.162701+00:00",
+  "masterReleaseApprovedAt": "2026-11-18T10:18:10.982Z"
 }
