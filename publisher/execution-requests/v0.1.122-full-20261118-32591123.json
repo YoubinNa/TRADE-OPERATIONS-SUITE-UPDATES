@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "request_id": "v0.1.122-full-20261118-32591123",
+  "candidate": "publisher/candidates/v0.1.122.json",
+  "candidate_sha256": "325911231b9a88b1625046059dedb641c6148925ec5380da222e0c697cc5c332",
+  "operation": "full",
+  "job_id": "release-0.1.122-0074d94e258e"
+}
