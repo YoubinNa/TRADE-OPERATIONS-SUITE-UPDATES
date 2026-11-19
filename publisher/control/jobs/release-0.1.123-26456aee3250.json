@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "2591de6096793f5e1ba59181f6eefce66883753c48d61d3aa9b859fcf0c22a3d",
+    "reference": "Master approved the v0.1.123 paired mail attachment synchronization fix, an existing-helper signing request and joint publication after signature on 2026-11-19.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
