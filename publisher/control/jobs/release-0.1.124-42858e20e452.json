@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "7434c48f8fb7ea2121ae4003dccccc63775647e17748370487ab617d92f52644",
+    "reference": "Master approved one joint v0.1.124 update for mail attachment deduplication and the container simulator, installed Windows verification, and delivery through the existing signing helper on 2026-11-19.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
