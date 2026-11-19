@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "3c602545af6c2ec882a4bdd33e7a41b3cdc43ef2cc8ca86b951ce32df5534de6",
+    "reference": "Master requested paired Master/User preparation of the pinned import/export dashboard through receipt at Master Signing. Production signing and publication are reserved to Master for the following day.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
