@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "1e07f6ada1d717602df82e9f3c064a24e55431c6b6054c9776521cb179173ac7",
+    "reference": "Approved Windows home workspace and module styling. Prepare both verified updates and deliver one request to Master Signing.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
