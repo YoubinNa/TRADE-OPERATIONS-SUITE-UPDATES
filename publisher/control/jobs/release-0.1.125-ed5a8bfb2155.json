@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "763a863cc1ee5a81eb4f3621add389ed8b2f5f82d4164750e978a9a8129088dc",
+    "reference": "Master authorized deployment of the verified paired v0.1.125 update and delivery of its signing request through the existing Master Signing helper on 2026-11-19.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
