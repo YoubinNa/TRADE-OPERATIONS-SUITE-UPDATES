@@ -1,0 +1,14 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "1b416ad8ad9e9fb442960da81b4211970e6a1deb9734bdfaee3a871da085075e",
+    "reference": "Master authorized immediate deployment of the paired v0.1.126 product quantity update and delivery of its signing request on 2026-11-19.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate",
+      "publish"
+    ]
+  }
+}
