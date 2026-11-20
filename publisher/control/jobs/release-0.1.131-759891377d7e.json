@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "5ecec86a5e53f10f3d11c86ba17d52f88d966cd5b611ca19b89528bb2e448eae",
+    "reference": "Master approved the v0.1.131 compact dashboard, unified tab bar and refresh shortcuts for immediate paired release and Master Signing request.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
