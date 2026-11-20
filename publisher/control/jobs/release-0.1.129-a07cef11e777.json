@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "b0c45ca1af71785db9ff3ddd8779140f069b92a752ef91e3cf7b390e97ce74d0",
+    "reference": "Master authorized the combined Windows UI, trade dashboard and equipment validation v0.32 updates for both profiles and delivery of their joint signing request.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
