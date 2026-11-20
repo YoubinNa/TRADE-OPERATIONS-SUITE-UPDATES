@@ -2,30 +2,30 @@
   "schema": 1,
   "planSha256": "c5bae624b6cca9e1db3326cc65f147ef4a2a9116787d4bd08eb338129a2b5290",
   "sourceCommit": "2f6a5d24ba7404c3c3f8c60f1e27214b7ca55950",
-  "previousHead": "be021c81c059a2daa0e6e663de802e4fb6fd25ab",
-  "stage": "transfer-incomplete",
-  "present": 64,
+  "previousHead": "4695541c68caa6435b5aab9872520d88e2d0b848",
+  "stage": "transfer-metadata-complete",
+  "present": 68,
   "total": 68,
   "committedPaths": [
     {
-      "path": "packages/v0.1.132/transfer/user-000.bin",
-      "sha": "0e04bb958638cc30bf4fd5ebeba3992e90a6998a",
+      "path": "packages/v0.1.132/transfer/user-030.bin",
+      "sha": "c5ad409f5db548293e32c3863a8361859e79b507",
       "size": 1800000
     },
     {
-      "path": "packages/v0.1.132/transfer/user-001.bin",
-      "sha": "b33b18e184c392c805442e09c1681852f02f21a1",
-      "size": 2211
-    },
-    {
-      "path": "packages/v0.1.132/transfer/user-009.bin",
-      "sha": "66c32f460a50d656d89e1c8e82117d694838ff34",
+      "path": "packages/v0.1.132/transfer/user-031.bin",
+      "sha": "39d2695c36f53f667b47eee0eeb9202dc15ceb3e",
       "size": 1800000
     },
     {
-      "path": "packages/v0.1.132/transfer/user-010.bin",
-      "sha": "e320ac24f8521f9fb5f30269a1f214bd86cb46e3",
-      "size": 204
+      "path": "packages/v0.1.132/transfer/user-032.bin",
+      "sha": "c029efc072b0549c18ab3a008caadb5d7f7c9f7e",
+      "size": 1800000
+    },
+    {
+      "path": "packages/v0.1.132/transfer/user-033.bin",
+      "sha": "272c81ae86a3f146f5e24b16dc43e7cc2dc1e105",
+      "size": 638921
     }
   ],
   "archiveVerified": false,
