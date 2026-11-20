@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "6597b298a3ee69020ecc2c6cb20a8fa37835f9956823ecdc777ede7fd4379182",
+    "reference": "Master approved the reviewed v0.1.132 Windows UI on 2026-11-20 and explicitly requested joint Master/User update distribution and delivery to Master Signing.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
