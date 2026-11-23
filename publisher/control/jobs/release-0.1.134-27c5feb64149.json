@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "ca78f472ad95a984079ffff5c60437ffb3e76f78f195fa1d0801fed51852dd51",
+    "reference": "Master-approved v0.1.134 paired popup readability update and signing request (2026-11-23 KST)",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
