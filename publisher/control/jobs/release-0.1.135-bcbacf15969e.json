@@ -1,13 +1,5 @@
 {
   "schema": 1,
-  "paused": false,
-  "releaseAuthorization": {
-    "candidateFileSha256": "043142ed578753f4ac69f4697b14ea5877d181695502420d868e5eed80a3fbf3",
-    "reference": "Master approved paired update distribution and activation of the v0.1.135 signing request on 2026-11-23.",
-    "allowedStages": [
-      "public-stage",
-      "preflight",
-      "activate"
-    ]
-  }
+  "paused": true,
+  "releaseAuthorization": null
 }
