@@ -1,0 +1,13 @@
+{
+  "schema": 1,
+  "paused": false,
+  "releaseAuthorization": {
+    "candidateFileSha256": "55a3ce6a9e36769bedd835424177975e397e1ec93b6cc178f29f76d8e33f2d7c",
+    "reference": "Master explicitly approved paired v0.1.133 distribution and signing request including automatic signed downloads, idle application, and user confirmation for open work on 2026-11-23 KST.",
+    "allowedStages": [
+      "public-stage",
+      "preflight",
+      "activate"
+    ]
+  }
+}
