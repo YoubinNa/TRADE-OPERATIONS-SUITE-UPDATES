@@ -1,13 +1,5 @@
 {
   "schema": 1,
-  "paused": false,
-  "releaseAuthorization": {
-    "candidateFileSha256": "41de26d99d07293d8735cea6a3d9623aeef3f9b55526edc25e2b0b0a5c24a903",
-    "reference": "2026-11-27 KST: the Master explicitly approved the reviewed home inventory month-end change, paired Master/User update delivery, and sending the Master Signing request.",
-    "allowedStages": [
-      "public-stage",
-      "preflight",
-      "activate"
-    ]
-  }
+  "paused": true,
+  "releaseAuthorization": null
 }
